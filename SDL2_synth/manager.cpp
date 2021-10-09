@@ -377,7 +377,7 @@ void manager::build_sine_table(int16_t* data, int wave_length) {
         Different notes will be created by stepping through
         the table at different intervals (phase).
     */
-    myfile << "Logging the sinewave table:\n\n\n";
+    //myfile << "Logging the sinewave table:\n\n\n";
 
     double phase_increment = (2.0f * DSP::pi) / (double)wave_length;
     double current_phase = 0;
@@ -387,7 +387,7 @@ void manager::build_sine_table(int16_t* data, int wave_length) {
         myfile << data[i] << "\n";
         current_phase += phase_increment;
     }
-    myfile << "\nLogged the sinewave table:\n";
+    //myfile << "\nLogged the sinewave table:\n";
 
 }
 void manager::setup_sdl(void) {
