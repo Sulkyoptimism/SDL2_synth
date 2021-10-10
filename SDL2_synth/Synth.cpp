@@ -1,12 +1,11 @@
 #include "Synth.h"
 #include "manager.h"
 
-Synth::Synth(){
+Synth::Synth(voice_params vp){
 	active = false;
 	sample = nullptr;
 
 	for (int i = 0; i < 8; i++) {
-		voice_params vp = voice::default_params;
 		voices.push_back(voice(sample_rate, vp, table_length));
 	}
 }

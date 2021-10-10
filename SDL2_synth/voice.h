@@ -6,6 +6,8 @@ struct voice_params {
     bool active;
     int id;
     int note;
+    int mode;
+    float pulse_width;
     double phase_position;
     int phase_int;
     double amplitude_factor;
@@ -29,6 +31,8 @@ public:
     bool active;
     int id;
     int note;
+    int mode;
+    float pulse_width;
     double phase_position;
     int phase_int;
     double amplitude_factor;

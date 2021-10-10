@@ -12,9 +12,12 @@ manager::manager()
     synth_count = 0;
     table_length = 1024;
     samples = nullptr;
-    for (int i = 0; i < 3; i++)
+    voice_params vp = voice::default_params;
+
+    for (int i = 0; i < max_num_synths; i++)
     {
-        synths.push_back(Synth());
+        vp.mode = 0;
+        synths.push_back(Synth(vp));
     }
 }
 
@@ -61,7 +64,7 @@ void manager::check_sdl_events(SDL_Event event) {
 
 static int get_key(SDL_Keysym* keysym)
 {
-    int new_note = 0; //note
+    int new_note = -1; //note
     switch (keysym->sym) {
     case SDLK_z:
         new_note = 12;
@@ -187,7 +190,7 @@ void manager::handle_note_keys(SDL_Keysym* keysym) {
         if (synths[synth_count].active) {
             new_note += (octave * 12);
             int err = synths[synth_count].assign_newnote(new_note);
-            printf("note base: %i on synth: %i\n", new_note, synth_count);
+            printf("note base: %i, pitch: %f, on synth: %i\n", new_note, get_pitch(new_note), synth_count);
         }
         else{
             new_note += (octave * 12);
@@ -199,8 +202,8 @@ void manager::handle_note_keys(SDL_Keysym* keysym) {
     }
     else if (new_note == SynthUp)
     {
-        if (synth_count > 2) {
-            synth_count = 2;
+        if (synth_count > 3) {
+            synth_count = 3;
         }
         else {
             synth_count++;
@@ -325,14 +328,14 @@ void manager::write_samples_to_buffer(int16_t* s_byteStream, long begin, long en
         samples = new int[length];
     }
     memset(samples, 0, length * sizeof(int));
-    for (int i = 0; i < 3; i ++) {
+    for (int i = 0; i < max_num_synths; i ++) {
         if (synths[i].active) {
             synths[i].evaluate_samples();
         }
     }
 
     for (int i = 0; i < length; i++){
-        for (int s = 0; s < 3; s++){
+        for (int s = 0; s < max_num_synths; s++){
             if (synths[s].active) {
                 samples[i] += synths[s].sample[i];
             }
@@ -361,12 +364,11 @@ void manager::set_up() {
 void manager::init_data(void) {
 
     // allocate memory for sine table and build it.
-    sine_wave_table = (int16_t*) helper::alloc_memory(sizeof(int16_t) * table_length, "PCM table");
+    sine_wave_table = (int16_t*) helper::alloc_memory(sizeof(int16_t) * table_length, "PCM SIN TABLE");
     build_sine_table(sine_wave_table, table_length);
-    //printf("sin1: %i\n", sine_wave_table[1]);
-    //printf("sin10: %i\n", sine_wave_table[10]);
-    //printf("sin100: %i\n", sine_wave_table[100]);
-    //printf("sin500: %i\n", sine_wave_table[500]);
+    saw_wave_table = (int16_t*)helper::alloc_memory(sizeof(int16_t) * table_length, "PCM SAW TABLE");
+    build_saw_table(saw_wave_table, table_length);
+
 }
 void manager::build_sine_table(int16_t* data, int wave_length) {
 
@@ -384,11 +386,37 @@ void manager::build_sine_table(int16_t* data, int wave_length) {
     for (int i = 0; i < wave_length; i++) {
         int sample = (int)(sin(current_phase) * SDL_MAX_SINT16);
         data[i] = (int16_t)sample;
-        myfile << data[i] << "\n";
+        //myfile << data[i] << "\n";
         current_phase += phase_increment;
     }
     //myfile << "\nLogged the sinewave table:\n";
 
+}
+void manager::build_saw_table(int16_t* data, int wave_length) {
+    double factor = ((SDL_MAX_SINT16 * 2) - 1) / wave_length;
+    for (int i = 0; i < wave_length; i++) {
+        int sample = (i * factor) - (SDL_MAX_SINT16-1);
+        data[i] = (int16_t)sample;
+    }
+}
+int16_t manager::square_from_sine(int index, float pulse_width) {
+    int temp_int = manager::get_instance()->sine_wave_table[index];
+    float factor = (1 - pulse_width) * SDL_MAX_SINT16;
+    if (temp_int > factor) {
+        temp_int = SDL_MAX_SINT16;
+    }
+    else if (temp_int < -factor){
+        temp_int = (-SDL_MAX_SINT16) + 1;
+    }
+    else {
+        temp_int = 0;
+    }
+    return (int16_t)temp_int;
+
+}
+int16_t manager::triangle_from_sin(int index) {
+    double temp = ((double)manager::get_instance()->sine_wave_table[index]) / (double)SDL_MAX_SINT16;
+    return (int16_t) (SDL_asin(temp) * SDL_MAX_SINT16);
 }
 void manager::setup_sdl(void) {
 
@@ -495,6 +523,7 @@ void manager::clean_up() {
 }
 void manager::cleanup_data(void) {
     helper::free_memory(sine_wave_table);
+    helper::free_memory(saw_wave_table);
     printf("alloc count:%d\n", helper::alloc_count);
 }
 void manager::destroy_sdl(void) {

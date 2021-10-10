@@ -44,7 +44,7 @@ public:
     int incoming_note;
 
   
-    Synth();
+    Synth(voice_params vp);
     void synth_init(int id);
     int assign_newnote(int new_note);
     void add_voice(int id, voice_params vp);
