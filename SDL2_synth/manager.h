@@ -7,6 +7,7 @@
 #include "helper.h"
 #include "Synth.h"
 #include "voice.h"
+#include <vector>
 
 //Global audio callback
 namespace callback {
@@ -31,6 +32,7 @@ public:
     //general
      bool quit;
      bool debuglog;
+     int last_note = -1;
 
      std::ofstream myfile;
 
@@ -49,6 +51,7 @@ public:
      int16_t* sine_wave_table;
      int16_t* saw_wave_table;
      int* samples;
+     std::vector<int> held_notes;
 
     // Synth synths[8];
     const int max_num_synths =  4;
@@ -83,8 +86,10 @@ public:
     //input func
      void check_sdl_events(SDL_Event event);
      void handle_key_down(SDL_Keysym* keysym);
+     void handle_key_up(SDL_Keysym* keysym);
      void handle_note_keys(SDL_Keysym* keysym);
      void print_note(int note);
+     void key_press(int note, bool b);
 
 
 private:

@@ -50,6 +50,7 @@ public:
     void add_voice(int id, voice_params vp);
     void add_voice(voice voi);
     int* evaluate_samples();
+    void key_press(int note, bool b);
 
     ~Synth();
 

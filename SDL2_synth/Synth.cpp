@@ -1,5 +1,4 @@
 #include "Synth.h"
-#include "manager.h"
 
 Synth::Synth(voice_params vp){
 	active = false;
@@ -10,7 +9,13 @@ Synth::Synth(voice_params vp){
 	}
 }
 
-
+void Synth::key_press(int note, bool b) {
+	for (int i = 0; i < 8; i++){
+		if (voices[i].active) {
+			voices[i].key_press(note, b);
+		}
+	}
+}
 
 void Synth::synth_init(int id){
 	active = true;
@@ -35,6 +40,7 @@ int Synth::assign_newnote(int new_note) {
 			voices[i].active = true;
 			voices[i].id = i;
 			voices[i].note = new_note;
+			voices[i].key_pressed = true;
 			return 0;
 		}
 		

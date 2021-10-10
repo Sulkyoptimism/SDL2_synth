@@ -1,30 +1,30 @@
 ﻿  manager.cpp
-C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(236,26): warning C4305: '=': truncation from 'int' to 'char'
-C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(236,22): warning C4309: '=': truncation of constant value
-C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(239,26): warning C4305: '=': truncation from 'int' to 'char'
-C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(239,22): warning C4309: '=': truncation of constant value
-C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(242,26): warning C4305: '=': truncation from 'int' to 'char'
-C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(242,22): warning C4309: '=': truncation of constant value
-C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(245,26): warning C4305: '=': truncation from 'int' to 'char'
-C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(245,22): warning C4309: '=': truncation of constant value
-C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(248,26): warning C4305: '=': truncation from 'int' to 'char'
-C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(248,22): warning C4309: '=': truncation of constant value
-C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(251,26): warning C4305: '=': truncation from 'int' to 'char'
-C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(251,22): warning C4309: '=': truncation of constant value
-C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(254,26): warning C4305: '=': truncation from 'int' to 'char'
-C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(254,22): warning C4309: '=': truncation of constant value
-C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(257,26): warning C4305: '=': truncation from 'int' to 'char'
-C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(257,22): warning C4309: '=': truncation of constant value
-C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(260,26): warning C4305: '=': truncation from 'int' to 'char'
-C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(260,22): warning C4309: '=': truncation of constant value
-C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(263,26): warning C4305: '=': truncation from 'int' to 'char'
-C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(263,22): warning C4309: '=': truncation of constant value
-C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(266,26): warning C4305: '=': truncation from 'int' to 'char'
-C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(266,22): warning C4309: '=': truncation of constant value
-C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(269,26): warning C4305: '=': truncation from 'int' to 'char'
-C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(269,22): warning C4309: '=': truncation of constant value
-C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(272,12): warning C4477: 'printf' : format string '%s' requires an argument of type 'char *', but variadic argument 1 has type 'int'
-C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(344,27): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
-C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(398,20): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(471,17): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(274,26): warning C4305: '=': truncation from 'int' to 'char'
+C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(274,22): warning C4309: '=': truncation of constant value
+C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(277,26): warning C4305: '=': truncation from 'int' to 'char'
+C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(277,22): warning C4309: '=': truncation of constant value
+C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(280,26): warning C4305: '=': truncation from 'int' to 'char'
+C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(280,22): warning C4309: '=': truncation of constant value
+C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(283,26): warning C4305: '=': truncation from 'int' to 'char'
+C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(283,22): warning C4309: '=': truncation of constant value
+C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(286,26): warning C4305: '=': truncation from 'int' to 'char'
+C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(286,22): warning C4309: '=': truncation of constant value
+C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(289,26): warning C4305: '=': truncation from 'int' to 'char'
+C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(289,22): warning C4309: '=': truncation of constant value
+C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(292,26): warning C4305: '=': truncation from 'int' to 'char'
+C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(292,22): warning C4309: '=': truncation of constant value
+C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(295,26): warning C4305: '=': truncation from 'int' to 'char'
+C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(295,22): warning C4309: '=': truncation of constant value
+C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(298,26): warning C4305: '=': truncation from 'int' to 'char'
+C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(298,22): warning C4309: '=': truncation of constant value
+C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(301,26): warning C4305: '=': truncation from 'int' to 'char'
+C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(301,22): warning C4309: '=': truncation of constant value
+C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(304,26): warning C4305: '=': truncation from 'int' to 'char'
+C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(304,22): warning C4309: '=': truncation of constant value
+C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(307,26): warning C4305: '=': truncation from 'int' to 'char'
+C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(307,22): warning C4309: '=': truncation of constant value
+C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(310,12): warning C4477: 'printf' : format string '%s' requires an argument of type 'char *', but variadic argument 1 has type 'int'
+C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(382,27): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
+C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(437,20): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\manager.cpp(510,17): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
   SDL2_synth.vcxproj -> C:\Users\thorf\source\repos\SDL2_synth\Debug\SDL2_synth.exe
