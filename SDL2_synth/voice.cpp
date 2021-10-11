@@ -7,8 +7,10 @@ bool voice::is_init = false;
 
 voice_params voice::default_params = {
     false,//active
+    false,
     -1,   //id //-1 non assign
     0,    //note
+    0,    //detune
     0,    //mode
     0.5,  //pulsewidth
     0,    //phasepos
@@ -37,8 +39,10 @@ voice::voice(double sample_rate, voice_params vp, int t_length)
 void voice::init_voice(voice_params vp)
 {
     active = vp.active;
+    flagged = vp.flagged;
     id = vp.id;
     note = vp.note;
+    detune = vp.detune;
     mode = vp.mode;
     pulse_width = vp.pulse_width;
     phase_position = vp.phase_position;
@@ -58,11 +62,11 @@ voice::~voice()
 
 }
 
-void voice::key_press(int note, bool b) {
+void voice::key_press(int note, bool b, bool poly_over) {
     if (!voice::is_init) {
         init_data();
     }
-    if (note == this->note) {
+    if (note == this->note || poly_over) {
         key_pressed = b;
     }
 }

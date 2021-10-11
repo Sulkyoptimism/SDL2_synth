@@ -17,7 +17,7 @@ manager::manager()
     for (int i = 0; i < max_num_synths; i++)
     {
         vp.mode = 0;
-        synths.push_back(Synth(vp));
+        synths.push_back(Synth(vp, sample_rate, table_length));
     }
 }
 
@@ -365,7 +365,7 @@ void manager::write_samples_to_buffer(int16_t* s_byteStream, long begin, long en
     memset(samples, 0, length * sizeof(int));
     for (int i = 0; i < max_num_synths; i ++) {
         if (synths[i].active) {
-            synths[i].evaluate_samples();
+            synths[i].evaluate_samples(length);
         }
     }
 
@@ -391,7 +391,9 @@ void manager::write_samples_to_buffer(int16_t* s_byteStream, long begin, long en
 
 
 //set up
-void manager::set_up() {
+void manager::set_up(double sample_rate) {
+    this->sample_rate = sample_rate;
+    this->table_length = 1024;
     setup_sdl();
     setup_sdl_audio();
 }

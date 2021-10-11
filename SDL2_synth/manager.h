@@ -58,7 +58,7 @@ public:
     // 
     static manager* get_instance();
     //setup
-    void set_up();
+    void set_up(double sample_rate);
      void init_data(void);
     int setup_sdl_audio(void);
      void setup_sdl(void);

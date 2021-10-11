@@ -2,7 +2,8 @@
 #include "manager.h"
 
 int main(int argc, char* args[]) {
-	manager::get_instance()->set_up();
+	double sample_rate = 44100;
+	manager::get_instance()->set_up(sample_rate);
 	while (!manager::get_instance()->quit)
 	{
 		manager::get_instance()->main_loop();

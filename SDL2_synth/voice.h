@@ -4,8 +4,10 @@
 
 struct voice_params {
     bool active;
+    bool flagged;
     int id;
     int note;
+    float detune;
     int mode;
     float pulse_width;
     double phase_position;
@@ -37,8 +39,10 @@ public:
 
     //voice
     bool active;
+    bool flagged;
     int id;
     int note;
+    float detune;
     int mode;
     float pulse_width;
     double phase_position;
@@ -71,7 +75,7 @@ public:
     int16_t get_sample_from_table(int phase_int, int synthwave_mode, float pulse_width);
     double update_envelope();
     double get_envelope_amp_by_node(int base_node, double cursor);
-    void key_press(int note, bool b);
+    void key_press(int note, bool b, bool poly_over);
 
     static bool is_init;
     static void init_data();

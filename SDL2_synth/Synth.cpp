@@ -1,19 +1,27 @@
 #include "Synth.h"
 
-Synth::Synth(voice_params vp){
+Synth::Synth(voice_params vp, double sample_rate, int table_length){
 	active = false;
 	sample = nullptr;
 
 	for (int i = 0; i < 8; i++) {
 		voices.push_back(voice(sample_rate, vp, table_length));
-		voices[i].sine_wave_table[3];
 	}
 }
 
 void Synth::key_press(int note, bool b) {
-	for (int i = 0; i < 8; i++){
-		if (voices[i].active) {
-			voices[i].key_press(note, b);
+	if (poly_mode) {
+		for (int i = 0; i < 8; i++) {
+			if (voices[i].active) {
+				voices[i].key_press(note, b, !poly_mode);
+			}
+		}
+	}
+	else {
+		for (int i = 0; i < 8; i++) {
+			if (voices[i].active) {
+				voices[i].key_press(note, b, !poly_mode);
+			}
 		}
 	}
 }
@@ -34,29 +42,41 @@ void Synth::clean_up() {
 
 /// returns 0 for okay assignment, 1 for same note picked, -1 for no voices left.
 int Synth::assign_newnote(int new_note) {
-	for (int i = 0; i < 8; i++){
-		if (voices[i].active) {
-			if (voices[i].note == new_note) {
-				return 1;
+	if (poly_mode) {
+		for (int i = 0; i < 8; i++) {
+			if (voices[i].active) {
+				if (voices[i].note == new_note) {
+					return 1;
+				}
+			}
+			else {
+				//new voice new note assignment
+				voices[i].active = true;
+				voices[i].id = i;
+				voices[i].note = new_note;
+				voices[i].key_pressed = true;
+				return 0;
+			}
+
+		}
+		return -1;
+	}
+	else {
+		for (int i = 0; i < 8; i++) {
+			if (voices[i].flagged) {
+				voices[i].active = true;
+				voices[i].id = i;
+				voices[i].note = new_note;
+				voices[i].key_pressed = true;
 			}
 		}
-		else {
-			//new voice new note assignment
-			voices[i].active = true;
-			voices[i].id = i;
-			voices[i].note = new_note;
-			voices[i].key_pressed = true;
-			return 0;
-		}
-		
 	}
-	return -1;
 	//err no voices left
 }
 
 
 
-int* Synth::evaluate_samples(){
+int* Synth::evaluate_samples(int block_size){
 	if (sample == nullptr){
 		sample = new int[block_size];
 	}
