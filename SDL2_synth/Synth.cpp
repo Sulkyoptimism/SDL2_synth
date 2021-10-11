@@ -1,11 +1,31 @@
 #include "Synth.h"
 
-Synth::Synth(voice_params vp, double sample_rate, int table_length){
+synth_params Synth::default_params = {
+	-1,
+	true,
+	{voice::default_params,
+	voice::default_params,
+	voice::default_params,
+	voice::default_params,
+	voice::default_params,
+	voice::default_params,
+	voice::default_params,
+	voice::default_params}
+
+};
+
+Synth::Synth(double sample_rate, int table_length){
 	active = false;
 	sample = nullptr;
+	this->sample_rate = sample_rate;
+	this->table_length = table_length;
 
+}
+void Synth::init_synth(synth_params sp) {
+	id = sp.id;
+	poly_mode = sp.poly_mode;
 	for (int i = 0; i < 8; i++) {
-		voices.push_back(voice(sample_rate, vp, table_length));
+		voices.push_back(voice(sample_rate, sp.vps[i], table_length));
 	}
 }
 
@@ -26,7 +46,7 @@ void Synth::key_press(int note, bool b) {
 	}
 }
 
-void Synth::synth_init(int id){
+void Synth::synth_activate(int id){
 	active = true;
 	this->id = id;
 }

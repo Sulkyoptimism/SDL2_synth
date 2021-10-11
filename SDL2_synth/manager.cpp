@@ -1,6 +1,14 @@
 #include "manager.h"
 manager* manager::singleton_instance = new manager();
 
+app_params manager::default_params = {
+    44100,
+    4,
+    {Synth::default_params,
+    Synth::default_params,
+    Synth::default_params}
+};
+
 manager::manager()
 {
     myfile.open("outlog.txt");
@@ -12,13 +20,8 @@ manager::manager()
     synth_count = 0;
     table_length = 1024;
     samples = nullptr;
-    voice_params vp = voice::default_params;
 
-    for (int i = 0; i < max_num_synths; i++)
-    {
-        vp.mode = 0;
-        synths.push_back(Synth(vp, sample_rate, table_length));
-    }
+
 }
 
 manager::~manager()
@@ -230,7 +233,7 @@ void manager::handle_note_keys(SDL_Keysym* keysym) {
         else{
             new_note += (octave * 12);
             //start new synth if 
-            synths[synth_count].synth_init(synth_count);
+            synths[synth_count].synth_activate(synth_count);
             int err = synths[synth_count].assign_newnote(new_note);
             printf("note base: %i, pitch: %f, on synth: %i\n", new_note, get_pitch(new_note), synth_count);
         }   
@@ -391,9 +394,18 @@ void manager::write_samples_to_buffer(int16_t* s_byteStream, long begin, long en
 
 
 //set up
-void manager::set_up(double sample_rate) {
-    this->sample_rate = sample_rate;
+void manager::set_up(app_params ap) {
+    this->sample_rate = ap.sample_rate;
     this->table_length = 1024;
+    max_num_synths = ap.number_synths;
+    for (int i = 0; i < max_num_synths; i++)
+    {
+        synths.push_back(Synth::Synth(sample_rate, table_length));
+    }
+    for (int i = 0; i < max_num_synths; i++)
+    {
+        synths[i].init_synth(ap.sps[i]);
+    }
     setup_sdl();
     setup_sdl_audio();
 }
