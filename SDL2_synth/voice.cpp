@@ -1,5 +1,4 @@
 #include "voice.h"
-#include "manager.h"
 
 
 voice_params voice::default_params = {
@@ -25,6 +24,7 @@ voice::voice(double sample_rate, voice_params vp, int t_length)
     init_voice(vp);
     this->sample_rate = sample_rate;
     table_length = t_length;
+    wavetables::get_instance()->init(sample_rate, table_length); //is gated to work once.
     // set envelope increment size based on samplerate.
     envelope_increment_base = 1 / (double)(sample_rate / 2);
 
@@ -115,30 +115,25 @@ double voice::update_envelope() {
     return amp;
 }
 
+double voice::get_pitch(double note) {
 
-int16_t voice::get_sample_from_table(int phase_int, int synthwave_mode, float pulse_width) {
-    switch (synthwave_mode)
-    {
-    case SINE:
-        return manager::get_instance()->sine_wave_table[phase_int];
-    case SQUARE:
-        return manager::get_instance()->square_from_sine(phase_int, pulse_width);
-    case TRI:
-        return manager::get_instance()->triangle_from_sin(phase_int);
-    case SAW:
-        return manager::get_instance()->saw_wave_table[phase_int];
-    default:
-        break;
-    }
+    /*
+        Calculate pitch from note value.
+        offset note by 57 halfnotes to get correct pitch from the range we have chosen for the notes.
+    */
+    double p = pow(DSP::chromatic_ratio, note - 57);
+    p *= 440;
+    return p;
 }
 
+
 void voice::write_samples(long length) {
-    double pitch = manager::get_instance()->get_pitch(note);
+    double pitch = get_pitch(note);
 
     for (int i = 0; i < length; i ++ ) {
         if (active) {
             
-            double lfo_out = manager::get_instance()->sine_wave_table[update_LFO_pos(lfo_rate)];
+            double lfo_out = wavetables::get_instance()->get_sample_from_table(update_LFO_pos(lfo_rate), 0, 0.5);
             double lfo_norm = lfo_out / (float)(INT16_MAX+1); //32768.0f;
             //double lfo_norm = 0;
             double pitch_mod = (pitch * mod_factor) * lfo_norm;
@@ -154,7 +149,7 @@ void voice::write_samples(long length) {
             }
 
             if (phase_int < table_length && phase_int > -1) {
-                int16_t sample_back = get_sample_from_table(phase_int, mode, pulse_width) * amplitude_factor;
+                int16_t sample_back = wavetables::get_instance()->get_sample_from_table(phase_int, mode, pulse_width) * amplitude_factor;
                 if (smoothing_enabled) {
                     target_amp = update_envelope();
                     // move current amp towards target amp for a smoother transition.

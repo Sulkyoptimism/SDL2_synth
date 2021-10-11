@@ -148,12 +148,14 @@
     <ClCompile Include="manager.cpp" />
     <ClCompile Include="Synth.cpp" />
     <ClCompile Include="voice.cpp" />
+    <ClCompile Include="wavetables.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="helper.h" />
     <ClInclude Include="manager.h" />
     <ClInclude Include="Synth.h" />
     <ClInclude Include="voice.h" />
+    <ClInclude Include="wavetables.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

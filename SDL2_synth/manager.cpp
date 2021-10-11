@@ -402,60 +402,12 @@ void manager::set_up() {
 void manager::init_data(void) {
     // allocate memory for sine table and build it.
     //sine_wave_table = (int16_t*) helper::alloc_memory(sizeof(int16_t) * table_length, "PCM SIN TABLE");
-    sine_wave_table = new int16_t[table_length];
-    build_sine_table(sine_wave_table, table_length);
-    //saw_wave_table = (int16_t*)helper::alloc_memory(sizeof(int16_t) * table_length, "PCM SAW TABLE");
-    saw_wave_table = new int16_t[table_length];
-    build_saw_table(saw_wave_table, table_length);
+    //sine_wave_table = new int16_t[table_length];
+    //build_sine_table(sine_wave_table, table_length);
+    ////saw_wave_table = (int16_t*)helper::alloc_memory(sizeof(int16_t) * table_length, "PCM SAW TABLE");
+    //saw_wave_table = new int16_t[table_length];
+    //build_saw_table(saw_wave_table, table_length);
 
-}
-void manager::build_sine_table(int16_t* data, int wave_length) {
-
-    /*
-        Build sine table to use as oscillator:
-        Generate a 16bit signed integer sinewave table with 1024 samples.
-        This table will be used to produce the notes.
-        Different notes will be created by stepping through
-        the table at different intervals (phase).
-    */
-    //myfile << "Logging the sinewave table:\n\n\n";
-
-    double phase_increment = (2.0f * DSP::pi) / (double)wave_length;
-    double current_phase = 0;
-    for (int i = 0; i < wave_length; i++) {
-        int sample = (int)(sin(current_phase) * INT16_MAX);
-        data[i] = (int16_t)sample;
-        //myfile << data[i] << "\n";
-        current_phase += phase_increment;
-    }
-    //myfile << "\nLogged the sinewave table:\n";
-
-}
-void manager::build_saw_table(int16_t* data, int wave_length) {
-    double factor = ((INT16_MAX * 2) - 1) / wave_length;
-    for (int i = 0; i < wave_length; i++) {
-        int sample = (i * factor) - (INT16_MAX-1);
-        data[i] = (int16_t)sample;
-    }
-}
-int16_t manager::square_from_sine(int index, float pulse_width) {
-    int temp_int = manager::get_instance()->sine_wave_table[index];
-    float factor = (1 - pulse_width) * INT16_MAX;
-    if (temp_int > factor) {
-        temp_int = INT16_MAX;
-    }
-    else if (temp_int < -factor){
-        temp_int = (-INT16_MAX) + 1;
-    }
-    else {
-        temp_int = 0;
-    }
-    return (int16_t)temp_int;
-
-}
-int16_t manager::triangle_from_sin(int index) {
-    double temp = ((double)manager::get_instance()->sine_wave_table[index]) / (double)INT16_MAX;
-    return (int16_t) (SDL_asin(temp) * INT16_MAX);
 }
 void manager::setup_sdl(void) {
 

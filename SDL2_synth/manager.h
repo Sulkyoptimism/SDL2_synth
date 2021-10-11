@@ -6,7 +6,6 @@
 #include <string>
 #include "helper.h"
 #include "Synth.h"
-#include "voice.h"
 #include <vector>
 
 //Global audio callback
@@ -14,14 +13,8 @@ namespace callback {
     void audio_callback(void* unused, Uint8* byte_stream, int byte_stream_length);
 }
 
-//namespace holder for const data
-namespace DSP {
-    const  double pi = 3.14159265358979323846;
-    const  double chromatic_ratio = 1.059463094359295264562;
-}
 
 enum synth_control {SynthUp = -2, SynthDown = -3};
-enum synth_mode { SINE = 0, SQUARE = 1, TRI = 2, SAW = 3};
 
  class manager
 {
