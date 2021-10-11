@@ -2,7 +2,7 @@
 #include "manager.h"
 
 int main(int argc, char* args[]) {
-	manager::get_instance()->set_up();
+	manager::get_instance()->set_up(44100, 1024);
 	while (!manager::get_instance()->quit)
 	{
 		manager::get_instance()->main_loop();

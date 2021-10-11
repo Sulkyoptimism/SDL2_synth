@@ -1,13 +1,17 @@
 #include "Synth.h"
 
-Synth::Synth(voice_params vp){
+Synth::Synth(voice_params vp, double samp_rate, int t_length){
 	active = false;
 	sample = nullptr;
 
 	for (int i = 0; i < 8; i++) {
-		voices.push_back(voice(sample_rate, vp, table_length));
+		voices.push_back(voice(samp_rate, vp, t_length));
 	}
 }
+
+void Synth::init_data(double samp_rate, int t_length) {
+}
+
 
 void Synth::key_press(int note, bool b) {
 	for (int i = 0; i < 8; i++){

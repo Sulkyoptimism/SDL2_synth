@@ -10,15 +10,16 @@ manager::manager()
     renderer = NULL;
     octave = 2;
     synth_count = 0;
-    table_length = 1024;
+
     samples = nullptr;
     voice_params vp = voice::default_params;
 
     for (int i = 0; i < max_num_synths; i++)
     {
         vp.mode = 0;
-        synths.push_back(Synth(vp));
+        synths.push_back(Synth(vp, sample_rate, table_length));
     }
+
 }
 
 manager::~manager()
@@ -394,68 +395,19 @@ void manager::write_samples_to_buffer(int16_t* s_byteStream, long begin, long en
 
 
 //set up
-void manager::set_up() {
-    init_data();
+void manager::permiate_data() {
+    Synth::init_data(sample_rate, table_length);
+}
+void manager::set_up(double samp_rate, int t_len) {
+//    init_data();
+
+    sample_rate = samp_rate;
+    table_length = t_len;
     setup_sdl();
     setup_sdl_audio();
-}
-void manager::init_data(void) {
-    // allocate memory for sine table and build it.
-    //sine_wave_table = (int16_t*) helper::alloc_memory(sizeof(int16_t) * table_length, "PCM SIN TABLE");
-    sine_wave_table = new int16_t[table_length];
-    build_sine_table(sine_wave_table, table_length);
-    //saw_wave_table = (int16_t*)helper::alloc_memory(sizeof(int16_t) * table_length, "PCM SAW TABLE");
-    saw_wave_table = new int16_t[table_length];
-    build_saw_table(saw_wave_table, table_length);
+    //permiate_data();
+    wavetable::init_data(sample_rate, table_length);
 
-}
-void manager::build_sine_table(int16_t* data, int wave_length) {
-
-    /*
-        Build sine table to use as oscillator:
-        Generate a 16bit signed integer sinewave table with 1024 samples.
-        This table will be used to produce the notes.
-        Different notes will be created by stepping through
-        the table at different intervals (phase).
-    */
-    //myfile << "Logging the sinewave table:\n\n\n";
-
-    double phase_increment = (2.0f * DSP::pi) / (double)wave_length;
-    double current_phase = 0;
-    for (int i = 0; i < wave_length; i++) {
-        int sample = (int)(sin(current_phase) * INT16_MAX);
-        data[i] = (int16_t)sample;
-        //myfile << data[i] << "\n";
-        current_phase += phase_increment;
-    }
-    //myfile << "\nLogged the sinewave table:\n";
-
-}
-void manager::build_saw_table(int16_t* data, int wave_length) {
-    double factor = ((INT16_MAX * 2) - 1) / wave_length;
-    for (int i = 0; i < wave_length; i++) {
-        int sample = (i * factor) - (INT16_MAX-1);
-        data[i] = (int16_t)sample;
-    }
-}
-int16_t manager::square_from_sine(int index, float pulse_width) {
-    int temp_int = manager::get_instance()->sine_wave_table[index];
-    float factor = (1 - pulse_width) * INT16_MAX;
-    if (temp_int > factor) {
-        temp_int = INT16_MAX;
-    }
-    else if (temp_int < -factor){
-        temp_int = (-INT16_MAX) + 1;
-    }
-    else {
-        temp_int = 0;
-    }
-    return (int16_t)temp_int;
-
-}
-int16_t manager::triangle_from_sin(int index) {
-    double temp = ((double)manager::get_instance()->sine_wave_table[index]) / (double)INT16_MAX;
-    return (int16_t) (SDL_asin(temp) * INT16_MAX);
 }
 void manager::setup_sdl(void) {
 
@@ -561,11 +513,6 @@ void manager::clean_up() {
     destroy_sdl();
 }
 void manager::cleanup_data(void) {
-    //helper::free_memory(sine_wave_table);
-    //helper::free_memory(saw_wave_table);
-    delete[] sine_wave_table;
-    delete[] saw_wave_table;
-    //printf("alloc count:%d\n", helper::alloc_count);
 }
 void manager::destroy_sdl(void) {
 

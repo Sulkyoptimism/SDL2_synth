@@ -23,8 +23,6 @@ public:
 
     // SDL
     const static int buffer_size = 4096; // must be a power of two, decrease to allow for a lower latency, increase to reduce risk of underrun.
-    const static int sample_rate = 44100;
-    const static int table_length = 1024;
     int block_size = 64;
 
     // voice
@@ -44,13 +42,15 @@ public:
     int incoming_note;
 
   
-    Synth(voice_params vp);
+    Synth(voice_params vp,double samp_rate, int t_length);
     void synth_init(int id);
     int assign_newnote(int new_note);
     void add_voice(int id, voice_params vp);
     void add_voice(voice voi);
     int* evaluate_samples();
     void key_press(int note, bool b);
+
+    static void init_data(double samp_rate, int t_length);
 
     ~Synth();
 

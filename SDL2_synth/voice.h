@@ -1,6 +1,7 @@
 #pragma once
 #include <stdint.h>
 #include <vector>
+#include "wavetable.h"
 
 struct voice_params {
     bool active;
@@ -45,6 +46,9 @@ public:
     double envelope_cursor;
     double current_amp;
 
+    //static int16_t* sine_wave_table;
+    //static int16_t* saw_wave_table;
+
     bool key_pressed;
 
     int16_t sample[64];
@@ -62,10 +66,11 @@ public:
     void init_voice(voice_params vp);
     int update_LFO_pos(double freq);
     void write_samples(long length);
-    int16_t get_sample_from_table(int phase_int, int synthwave_mode, float pulse_width);
     double update_envelope();
     double get_envelope_amp_by_node(int base_node, double cursor);
     void key_press(int note, bool b);
+
+    double get_pitch(double note);
 
     ~voice();
 
