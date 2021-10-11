@@ -51,7 +51,7 @@ public:
     void add_voice(voice voi);
     int* evaluate_samples();
     void key_press(int note, bool b);
-
+    void clean_up();
     ~Synth();
 
 private:

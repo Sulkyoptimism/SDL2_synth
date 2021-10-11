@@ -1,6 +1,9 @@
 #include "voice.h"
-#include "manager.h"
-
+double voice::sample_rate = 1;
+int voice::table_length = 1024;
+int16_t* voice::sine_wave_table = new int16_t[table_length];
+int16_t* voice::saw_wave_table = new int16_t[table_length];
+bool voice::is_init = false;
 
 voice_params voice::default_params = {
     false,//active
@@ -25,9 +28,10 @@ voice::voice(double sample_rate, voice_params vp, int t_length)
     init_voice(vp);
     this->sample_rate = sample_rate;
     table_length = t_length;
+    
     // set envelope increment size based on samplerate.
     envelope_increment_base = 1 / (double)(sample_rate / 2);
-
+    //int samp = sine_wave_table[3];
 }
 
 void voice::init_voice(voice_params vp)
@@ -51,9 +55,13 @@ void voice::init_voice(voice_params vp)
 
 voice::~voice()
 {
+
 }
 
 void voice::key_press(int note, bool b) {
+    if (!voice::is_init) {
+        init_data();
+    }
     if (note == this->note) {
         key_pressed = b;
     }
@@ -117,28 +125,96 @@ double voice::update_envelope() {
 
 
 int16_t voice::get_sample_from_table(int phase_int, int synthwave_mode, float pulse_width) {
+    int16_t samp = 0;
     switch (synthwave_mode)
     {
     case SINE:
-        return manager::get_instance()->sine_wave_table[phase_int];
+        samp = sine_wave_table[phase_int];
+        return samp;
     case SQUARE:
-        return manager::get_instance()->square_from_sine(phase_int, pulse_width);
+        return square_from_sine(phase_int, pulse_width);
     case TRI:
-        return manager::get_instance()->triangle_from_sin(phase_int);
+        return triangle_from_sin(phase_int);
     case SAW:
-        return manager::get_instance()->saw_wave_table[phase_int];
+        return saw_wave_table[phase_int];
     default:
         break;
     }
 }
+void voice::init_data() {
+    if (!is_init) {
+        sine_wave_table = new int16_t[table_length];
+        saw_wave_table = new int16_t[table_length];
+        sine_wave_table = build_sine_table(table_length);
+        build_saw_table(saw_wave_table, table_length);
+        is_init = true;
+        int samp = sine_wave_table[3];
+    }
+
+}
+void voice::delete_data() {
+    delete[] sine_wave_table;
+    delete[] saw_wave_table;
+}
+int16_t* voice::build_sine_table( int wave_length) {
+
+    /*
+        Build sine table to use as oscillator:
+        Generate a 16bit signed integer sinewave table with 1024 samples.
+        This table will be used to produce the notes.
+        Different notes will be created by stepping through
+        the table at different intervals (phase).
+    */
+    //manager::get_instance()->myfile << "Logging the sinewave table:\n\n\n";
+    int16_t* buf = new int16_t[wave_length];
+    double phase_increment = (2.0f * DSP::pi) / (double)wave_length;
+    double current_phase = 0;
+    for (int i = 0; i < wave_length; i++) {
+        int sample = (int)(sin(current_phase) * INT16_MAX);
+        buf[i] = (int16_t)sample;
+        //manager::get_instance()->myfile << data[i] << "\n";
+        current_phase += phase_increment;
+    }
+    //manager::get_instance()->myfile << "\nLogged the sinewave table:\n";
+    return buf;
+}
+void voice::build_saw_table(int16_t* data, int wave_length) {
+    double factor = ((INT16_MAX * 2) - 1) / wave_length;
+    for (int i = 0; i < wave_length; i++) {
+        int sample = (i * factor) - (INT16_MAX - 1);
+        data[i] = (int16_t)sample;
+    }
+}
+int16_t voice::square_from_sine(int index, float pulse_width) {
+    int temp_int = sine_wave_table[index];
+    float factor = (1 - pulse_width) * INT16_MAX;
+    if (temp_int > factor) {
+        temp_int = INT16_MAX;
+    }
+    else if (temp_int < -factor) {
+        temp_int = (-INT16_MAX) + 1;
+    }
+    else {
+        temp_int = 0;
+    }
+    return (int16_t)temp_int;
+
+}
+int16_t voice::triangle_from_sin(int index) {
+    double temp = ((double)sine_wave_table[index]) / (double)INT16_MAX;
+    return (int16_t)(asin(temp) * INT16_MAX);
+}
+
+
 
 void voice::write_samples(long length) {
-    double pitch = manager::get_instance()->get_pitch(note);
+
+    double pitch = get_pitch(note);
 
     for (int i = 0; i < length; i ++ ) {
         if (active) {
             
-            double lfo_out = manager::get_instance()->sine_wave_table[update_LFO_pos(lfo_rate)];
+            double lfo_out = sine_wave_table[update_LFO_pos(lfo_rate)];
             double lfo_norm = lfo_out / (float)(INT16_MAX+1); //32768.0f;
             //double lfo_norm = 0;
             double pitch_mod = (pitch * mod_factor) * lfo_norm;
@@ -173,10 +249,11 @@ void voice::write_samples(long length) {
                 }
                 else {
                     current_amp = target_amp;
-                    if (current_amp == 0) {
-                        active = false;
-                        this->init_voice(voice::default_params);
-                    }
+
+                }
+                if (current_amp == 0) {
+                    active = false;
+                    this->init_voice(voice::default_params);
                 }
                 sample[i] = sample_back * current_amp;
             }   
@@ -184,4 +261,15 @@ void voice::write_samples(long length) {
         }
     }
 
+}
+
+double voice::get_pitch(double note) {
+
+    /*
+        Calculate pitch from note value.
+        offset note by 57 halfnotes to get correct pitch from the range we have chosen for the notes.
+    */
+    double p = pow(DSP::chromatic_ratio, note - 57);
+    p *= 440;
+    return p;
 }

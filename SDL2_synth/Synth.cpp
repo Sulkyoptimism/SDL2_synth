@@ -6,6 +6,7 @@ Synth::Synth(voice_params vp){
 
 	for (int i = 0; i < 8; i++) {
 		voices.push_back(voice(sample_rate, vp, table_length));
+		voices[i].sine_wave_table[3];
 	}
 }
 
@@ -26,6 +27,10 @@ Synth::~Synth()
 {
 }
 
+void Synth::clean_up() {
+	voice::delete_data();
+
+}
 
 /// returns 0 for okay assignment, 1 for same note picked, -1 for no voices left.
 int Synth::assign_newnote(int new_note) {
