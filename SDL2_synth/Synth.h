@@ -9,12 +9,12 @@
 #include <vector>
 #include "voice.h"
 
-struct synth_params {
-    int id;
-    bool poly_mode;
-    voice_params vps[8];
-
-};
+//struct synth_params {
+//    int id;
+//    bool poly_mode;
+//    voice_params vps[8];
+//
+//};
 
 class Synth
 {
@@ -30,7 +30,7 @@ public:
 
     // voice
     std::vector<voice> voices; //set in init
-    static synth_params default_params;
+    synth_params default_params;
 
     int octave = 2;
     int max_note = 131;
@@ -39,6 +39,7 @@ public:
 
   
     Synth(double sample_rate, int table_length);
+    static synth_params get_defaults();
     void init_synth(synth_params sp);
     void synth_activate(int id);
     int assign_newnote(int new_note);

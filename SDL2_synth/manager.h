@@ -4,10 +4,9 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include "helper.h"
 #include "Synth.h"
-#include "voice.h"
 #include <vector>
+#include "json.hpp"
 
 //Global audio callback
 namespace callback {
@@ -19,15 +18,18 @@ namespace callback {
 
 enum synth_control {SynthUp = -2, SynthDown = -3};
 
-struct app_params {
-    double sample_rate;
-    int number_synths;
-    synth_params sps[8];
-};
+//struct app_params {
+//    double sample_rate;
+//    int number_synths;
+//    synth_params sps[8];
+//};
 
  class manager
 {
 public:
+    ////util func
+    static app_params default_params;
+    static manager* get_instance();
     manager();
     ~manager();
 
@@ -60,9 +62,7 @@ public:
     int synth_count;
     int octave;
 
-    ////util func
-    static app_params default_params;
-    static manager* get_instance();
+
     //setup
     void set_up(app_params ap);
     int setup_sdl_audio(void);

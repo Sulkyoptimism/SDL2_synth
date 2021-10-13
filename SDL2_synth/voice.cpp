@@ -1,43 +1,47 @@
 #include "voice.h"
+//
+//
+//voice_params voice::default_params = {
+//    false,//active
+//    false,
+//    -1,   //id //-1 non assign
+//    0,    //note
+//    0,    //detune
+//    0,    //mode
+//    0.5,  //pulsewidth
+//    0,    //phasepos
+//    0,    //phaseint
+//    10,   //lforate
+//    0,    //lfopos
+//    0,    //lfoint
+//    0.5  //modfactor
+//
+//
+//};
+
 double voice::sample_rate = 1;
 int voice::table_length = 1024;
 int16_t* voice::sine_wave_table = new int16_t[table_length];
 int16_t* voice::saw_wave_table = new int16_t[table_length];
 bool voice::is_init = false;
 
-voice_params voice::default_params = {
-    false,//active
-    false,
-    -1,   //id //-1 non assign
-    0,    //note
-    0,    //detune
-    0,    //mode
-    0.5,  //pulsewidth
-    0,    //phasepos
-    0,    //phaseint
-    10,   //lforate
-    0,    //lfopos
-    0,    //lfoint
-    0.5,  //modfactor
-    1,    //ammpfac
-    0,    //envcursor
-    0,    //curamp
-
-};
-
-voice::voice(double sample_rate, voice_params vp, int t_length)
+voice::voice(double sample_rate, int t_length)
 {
-    init_voice(vp);
     this->sample_rate = sample_rate;
     table_length = t_length;
-    
+    voice_params test_params = default_params;
+
     // set envelope increment size based on samplerate.
     envelope_increment_base = 1 / (double)(sample_rate / 2);
     //int samp = sine_wave_table[3];
 }
 
-void voice::init_voice(voice_params vp)
+void voice::init_voice( int parent_id, voice_params vp)
 {
+    default_params = vp;
+    this->parent_id = parent_id;
+    current_amp = 0;
+    envelope_cursor = 0;
     active = vp.active;
     flagged = vp.flagged;
     id = vp.id;
@@ -52,8 +56,7 @@ void voice::init_voice(voice_params vp)
     lfo_phase_int = vp.lfo_phase_int;
     mod_factor = vp.mod_factor;    
     amplitude_factor = vp.amplitude_factor;
-    envelope_cursor = vp.envelope_cursor;
-    current_amp = vp.current_amp;
+
 }
 
 
@@ -152,7 +155,7 @@ void voice::init_data() {
         sine_wave_table = build_sine_table(table_length);
         build_saw_table(saw_wave_table, table_length);
         is_init = true;
-        int samp = sine_wave_table[3];
+        //int samp = sine_wave_table[3]; //sinewave mem test
     }
 
 }
@@ -257,7 +260,7 @@ void voice::write_samples(long length) {
                 }
                 if (current_amp == 0) {
                     active = false;
-                    this->init_voice(voice::default_params);
+                    this->init_voice(parent_id, default_params);
                 }
                 sample[i] = sample_back * current_amp;
             }   

@@ -72,7 +72,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\thorf\source\repos\SDL2_synth\SDL2\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\thorf\source\repos\SDL2_synth\nlohmann;C:\Users\thorf\source\repos\SDL2_synth\SDL2\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Users\thorf\source\repos\SDL2_synth\SDL2\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

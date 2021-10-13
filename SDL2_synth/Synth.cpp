@@ -1,31 +1,36 @@
 #include "Synth.h"
 
-synth_params Synth::default_params = {
-	-1,
-	true,
-	{voice::default_params,
-	voice::default_params,
-	voice::default_params,
-	voice::default_params,
-	voice::default_params,
-	voice::default_params,
-	voice::default_params,
-	voice::default_params}
-
-};
+//synth_params Synth::default_params = {
+//	-1,
+//	true,
+//	{voice::default_params,
+//	voice::default_params,
+//	voice::default_params,
+//	voice::default_params,
+//	voice::default_params,
+//	voice::default_params,
+//	voice::default_params,
+//	voice::default_params}
+//
+//};
 
 Synth::Synth(double sample_rate, int table_length){
 	active = false;
 	sample = nullptr;
 	this->sample_rate = sample_rate;
 	this->table_length = table_length;
+	synth_params test_params = default_params;
+	for (int i = 0; i < 8; i++) {
+		voices.push_back(voice(sample_rate, table_length));
+	}
 
 }
+
 void Synth::init_synth(synth_params sp) {
 	id = sp.id;
 	poly_mode = sp.poly_mode;
 	for (int i = 0; i < 8; i++) {
-		voices.push_back(voice(sample_rate, sp.vps[i], table_length));
+		voices[i].init_voice(id, sp.vps[i]);
 	}
 }
 
@@ -77,7 +82,6 @@ int Synth::assign_newnote(int new_note) {
 				voices[i].key_pressed = true;
 				return 0;
 			}
-
 		}
 		return -1;
 	}
@@ -106,11 +110,8 @@ int* Synth::evaluate_samples(int block_size){
 			voices[v].write_samples(block_size);
 			for (int i = 0; i < block_size; i++){
 				sample[i] += voices[v].sample[i];
-				//manager::get_instance()->myfile << std::to_string(sample[i]) << "\n";
-
 			}
 		}
-		//printf("dad?");
 	}
 	return sample;
 }

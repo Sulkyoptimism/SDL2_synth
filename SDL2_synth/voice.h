@@ -1,26 +1,27 @@
 #pragma once
 #include <stdint.h>
 #include <vector>
-
-struct voice_params {
-    bool active;
-    bool flagged;
-    int id;
-    int note;
-    float detune;
-    int mode;
-    float pulse_width;
-    double phase_position;
-    int phase_int;
-    double lfo_rate;
-    double lfo_phase_pos;
-    int lfo_phase_int;
-    float mod_factor;
-    double amplitude_factor;
-    double envelope_cursor = 0;
-    double current_amp;
-    int16_t sample[64];
-};
+#include "helper.h"
+//
+//struct voice_params {
+//    bool active;
+//    bool flagged;
+//    int id;
+//    int note;
+//    float detune;
+//    int mode;
+//    float pulse_width;
+//    double phase_position;
+//    int phase_int;
+//    double lfo_rate;
+//    double lfo_phase_pos;
+//    int lfo_phase_int;
+//    float mod_factor;
+//    double amplitude_factor;
+//    double envelope_cursor = 0;
+//    double current_amp;
+//    int16_t sample[64];
+//};
 enum synth_mode { SINE = 0, SQUARE = 1, TRI = 2, SAW = 3 };
 
 namespace DSP {
@@ -40,6 +41,7 @@ public:
     //voice
     bool active;
     bool flagged;
+    int parent_id;
     int id;
     int note;
     float detune;
@@ -59,7 +61,7 @@ public:
 
     int16_t sample[64];
 
-    static voice_params default_params;
+    voice_params default_params;
     // amplitude smoothing
     double envelope_data[4] = { 1.0f, 0.5f, 0.5f, 0.0f }; // ADSR amp range 0.0-1.0
     double envelope_speed_scale = 1; // set envelope speed 1-8
@@ -68,8 +70,8 @@ public:
     double smoothing_amp_speed = 0.01;
     double smoothing_enabled = true;
 
-    voice(double sample_rate, voice_params vp, int table_length);
-    void init_voice(voice_params vp);
+    voice(double sample_rate, int table_length);
+    void init_voice(int parent_id, voice_params vp);
     int update_LFO_pos(double freq);
     void write_samples(long length);
     int16_t get_sample_from_table(int phase_int, int synthwave_mode, float pulse_width);

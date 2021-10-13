@@ -1,13 +1,20 @@
 #include "manager.h"
+
 manager* manager::singleton_instance = new manager();
 
-app_params manager::default_params = {
-    44100,
-    4,
-    {Synth::default_params,
-    Synth::default_params,
-    Synth::default_params}
-};
+//app_params manager::default_params = {
+//    44100,
+//    4,
+//    {Synth::default_params,
+//    Synth::default_params,
+//    Synth::default_params,
+//    Synth::default_params,
+//    Synth::default_params,
+//    Synth::default_params,
+//    Synth::default_params,
+//    Synth::default_params}
+//};
+
 
 manager::manager()
 {
@@ -20,6 +27,7 @@ manager::manager()
     synth_count = 0;
     table_length = 1024;
     samples = nullptr;
+
 
 
 }
@@ -398,7 +406,7 @@ void manager::set_up(app_params ap) {
     this->sample_rate = ap.sample_rate;
     this->table_length = 1024;
     max_num_synths = ap.number_synths;
-    for (int i = 0; i < max_num_synths; i++)
+    for (int i = 0; i < 8; i++)
     {
         synths.push_back(Synth::Synth(sample_rate, table_length));
     }
