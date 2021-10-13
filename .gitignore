@@ -164,3 +164,8 @@ SDL2_synth/Debug/SDL2_synth.tlog/SDL2_synth.write.1u.tlog
 SDL2_synth/Debug/Synth.obj
 SDL2_synth/Debug/vc142.idb
 SDL2_synth/Debug/vc142.pdb
+*.obj
+*.enc
+*.log
+*.ilk
+*.tlog
