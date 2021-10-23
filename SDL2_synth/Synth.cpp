@@ -44,7 +44,7 @@ void Synth::key_press(int note, bool b) {
 	}
 	else {
 		for (int i = 0; i < 8; i++) {
-			if (voices[i].active) {
+			if (voices[i].flagged) {
 				voices[i].key_press(note, b, !poly_mode);
 			}
 		}
