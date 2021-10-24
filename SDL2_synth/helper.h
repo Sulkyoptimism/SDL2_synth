@@ -18,6 +18,7 @@ struct voice_params {
     double phase_position;
     int phase_int;
     double lfo_rate;
+    int lfo_mode;
     double lfo_phase_pos;
     int lfo_phase_int;
     float mod_factor;

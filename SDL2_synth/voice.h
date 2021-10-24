@@ -22,7 +22,7 @@
 //    double current_amp;
 //    int16_t sample[64];
 //};
-enum synth_mode { SINE = 0, SQUARE = 1, TRI = 2, SAW = 3 };
+enum wave_type { SINE = 0, SQUARE = 1, TRI = 2, SAW = 3 };
 
 namespace DSP {
     const  double pi = 3.14159265358979323846;
@@ -50,10 +50,15 @@ public:
     double phase_position;
     int phase_int;
     double lfo_rate;
+    int lfo_mode;
     double lfo_phase_pos;
     int lfo_phase_int;
     float mod_factor;
     double amplitude_factor;
+    /// <summary>
+    /// ///////////////
+    /// </summary>
+
     double envelope_cursor;
     double current_amp;
 

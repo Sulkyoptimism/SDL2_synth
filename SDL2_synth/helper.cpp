@@ -13,7 +13,8 @@ voice_params helper::voiced_params = {
     0.5,  //pulsewidth
     0,    //phasepos
     0,    //phaseint
-    10,   //lforate
+    0,   //lforate
+    0,  //lfomode
     0,    //lfopos
     0,    //lfoint
     0.5,  //modfactor
@@ -86,7 +87,8 @@ app_params helper::params_from_json(json data) {
             ap.sps[i].vps[j].phase_position = voice_list[j].at("phasepos");    //phasepos
             ap.sps[i].vps[j].phase_int = voice_list[j].at("phaseint") ;    //phaseint
             ap.sps[i].vps[j].lfo_rate = voice_list[j].at("lforate") ;   //lforate
-            ap.sps[i].vps[j].lfo_phase_pos = voice_list[j].at("lfopos") ;    //lfopos
+            ap.sps[i].vps[j].lfo_mode = voice_list[j].at("lfomode");
+            ap.sps[i].vps[j].lfo_phase_pos = voice_list[j].at("lfopos");    //lfopos
             ap.sps[i].vps[j].lfo_phase_int = voice_list[j].at("lfoint");    //lfoint
             ap.sps[i].vps[j].mod_factor = voice_list[j].at("modfactor");  //modfactor
             ap.sps[i].vps[j].amplitude_factor = voice_list[j].at("ammpfac");    //ammpfac
@@ -108,6 +110,7 @@ void helper::export_dparams()
     j_voi["phasepos"] = voiced_params.phase_position;    //phasepos
     j_voi["phaseint"] = voiced_params.phase_int;    //phaseint
     j_voi["lforate"] = voiced_params.lfo_rate;   //lforate
+    j_voi["lfomode"] = voiced_params.lfo_mode;
     j_voi["lfopos"] = voiced_params.lfo_phase_pos;    //lfopos
     j_voi["lfoint"] = voiced_params.lfo_phase_int;    //lfoint
     j_voi["modfactor"] = voiced_params.mod_factor;  //modfactor
@@ -170,6 +173,7 @@ void helper::export_params(app_params ap)
             j_voi["phasepos"] = voiced_params.phase_position;    //phasepos
             j_voi["phaseint"] = voiced_params.phase_int;    //phaseint
             j_voi["lforate"] = voiced_params.lfo_rate;   //lforate
+            j_voi["lfomode"] = voiced_params.lfo_mode;
             j_voi["lfopos"] = voiced_params.lfo_phase_pos;    //lfopos
             j_voi["lfoint"] = voiced_params.lfo_phase_int;    //lfoint
             j_voi["modfactor"] = voiced_params.mod_factor;  //modfactor

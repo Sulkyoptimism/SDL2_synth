@@ -52,6 +52,7 @@ void voice::init_voice( int parent_id, voice_params vp)
     phase_position = vp.phase_position;
     phase_int = vp.lfo_phase_int;
     lfo_rate = vp.lfo_rate;
+    lfo_mode = vp.lfo_mode;
     lfo_phase_pos = vp.lfo_phase_pos;
     lfo_phase_int = vp.lfo_phase_int;
     mod_factor = vp.mod_factor;    
@@ -221,7 +222,7 @@ void voice::write_samples(long length) {
     for (int i = 0; i < length; i ++ ) {
         if (active) {
             
-            double lfo_out = sine_wave_table[update_LFO_pos(lfo_rate)];
+            double lfo_out = get_sample_from_table(update_LFO_pos(lfo_rate), lfo_mode, 0.5);
             double lfo_norm = lfo_out / (float)(INT16_MAX+1); //32768.0f;
             //double lfo_norm = 0;
             double pitch_mod = (pitch * mod_factor) * lfo_norm;

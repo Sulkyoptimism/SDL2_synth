@@ -39,7 +39,6 @@ public:
 
   
     Synth(double sample_rate, int table_length);
-    static synth_params get_defaults();
     void init_synth(synth_params sp);
     void synth_activate(int id);
     int assign_newnote(int new_note);
