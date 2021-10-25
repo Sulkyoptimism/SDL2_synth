@@ -85,7 +85,9 @@ public:
     void handle_key_up(SDL_Keysym* keysym);
     void handle_note_keys(SDL_Keysym* keysym);
     void print_note(int note);
-    void key_press(int note, bool b);
+    void key_press(int note, int synthid, bool b);
+
+    app_params get_params();
 
 
 private:

@@ -60,6 +60,9 @@ void voice::init_voice( int parent_id, voice_params vp)
 
 }
 
+void voice::flag() {
+    flagged = true;
+}
 
 voice::~voice()
 {

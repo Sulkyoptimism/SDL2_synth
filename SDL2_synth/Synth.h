@@ -24,6 +24,7 @@ public:
     bool active;
     int id;
     bool poly_mode = true;
+    int polymax = 1;
 
     double sample_rate;
     int table_length;
@@ -44,6 +45,8 @@ public:
     int assign_newnote(int new_note);
     int* evaluate_samples(int block_size);
     void key_press(int note, bool b);
+    synth_params get_params();
+    void flag();
     void clean_up();
     ~Synth();
 

@@ -29,8 +29,16 @@ Synth::Synth(double sample_rate, int table_length){
 void Synth::init_synth(synth_params sp) {
 	id = sp.id;
 	poly_mode = sp.poly_mode;
+	polymax = sp.polymax;
 	for (int i = 0; i < 8; i++) {
 		voices[i].init_voice(id, sp.vps[i]);
+	}
+
+}
+void Synth::flag() {
+	for (int i = 0; i < polymax; i++)
+	{
+		voices[i].flag();
 	}
 }
 
@@ -44,8 +52,8 @@ void Synth::key_press(int note, bool b) {
 	}
 	else {
 		for (int i = 0; i < 8; i++) {
-			if (voices[i].flagged) {
-				voices[i].key_press(note, b, !poly_mode);
+			if (voices[i].active) {
+				voices[i].key_press(note, b, poly_mode);
 			}
 		}
 	}
@@ -86,14 +94,19 @@ int Synth::assign_newnote(int new_note) {
 		return -1;
 	}
 	else {
+		int flag_count = 0;
+
 		for (int i = 0; i < 8; i++) {
 			if (voices[i].flagged) {
+				flag_count++;
 				voices[i].active = true;
 				voices[i].id = i;
 				voices[i].note = new_note;
 				voices[i].key_pressed = true;
 			}
 		}
+		return 0;
+
 	}
 	//err no voices left
 }

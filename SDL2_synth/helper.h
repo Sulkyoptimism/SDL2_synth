@@ -23,13 +23,13 @@ struct voice_params {
     int lfo_phase_int;
     float mod_factor;
     double amplitude_factor;
-    double envelope_cursor = 0;
-    double current_amp;
+    int voice_pmax;
 };
 
 struct synth_params {
     int id;
     bool poly_mode;
+    int polymax;
     voice_params vps[8];
 
 };

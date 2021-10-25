@@ -20,11 +20,11 @@ voice_params helper::voiced_params = {
     0.5,  //modfactor
     1    //ammpfac
 
-
 };
 synth_params helper::synthd_params = {
     -1,
     true,
+    1,
     {
     voiced_params,
     voiced_params,
@@ -71,6 +71,7 @@ app_params helper::params_from_json(json data) {
     {
         ap.sps[i].id = synth_list[i].at("synth_id");
         ap.sps[i].poly_mode = synth_list[i].at("poly_mode");
+        ap.sps[i].polymax = synth_list[i].at("poly_max");
         std::vector<json> voice_list = synth_list[i].at("vps");
 
 
@@ -119,6 +120,7 @@ void helper::export_dparams()
     json j_synth;
     j_synth["synth_id"] = synthd_params.id;
     j_synth["poly_mode"] = synthd_params.poly_mode;
+    j_synth["poly_max"] = synthd_params.polymax;
     std::vector<json> json_list;
     for (int i = 0; i < 8; i++)
     {
@@ -159,6 +161,7 @@ void helper::export_params(app_params ap)
         std::vector<json> jvoi_list;
         j_synth["synth_id"] = ap.sps[i].id;
         j_synth["poly_mode"] = ap.sps[i].poly_mode;
+        j_synth["poly_max"] = ap.sps[i].polymax;
 
         for (int j = 0; j < 8; j++)
         {

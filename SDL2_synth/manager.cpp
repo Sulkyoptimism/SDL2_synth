@@ -192,10 +192,8 @@ void manager::handle_key_down(SDL_Keysym* keysym) {
     handle_note_keys(keysym);
 }
 
-void manager::key_press(int note, bool b) {
-    for (int i = 0; i < max_num_synths; i++){
-        synths[i].key_press(note, b);
-    }
+void manager::key_press(int note, int synthid, bool b) {
+     synths[synthid].key_press(note, b);
 }
 
 void manager::handle_key_up(SDL_Keysym* keysym) {
@@ -211,7 +209,7 @@ void manager::handle_key_up(SDL_Keysym* keysym) {
 
         held_notes.erase(std::remove(held_notes.begin(), held_notes.end(), note), held_notes.end());
         //keypress false
-        key_press(note, false);
+        key_press(note, synth_count, false);
         last_note = -1;
         
         break;
@@ -231,23 +229,26 @@ void manager::handle_note_keys(SDL_Keysym* keysym) {
         is_new = true;
     }
 
-
+    //if new note is valid and is new
     if (is_new && new_note > -1) {
-        if (synths[synth_count].active) {
+        if (synths[synth_count].active && synths[synth_count].poly_mode) {
             new_note += (octave * 12);
             int err = synths[synth_count].assign_newnote(new_note);
             printf("note base: %i, pitch: %f, on synth: %i\n", new_note, get_pitch(new_note), synth_count);
+            held_notes.push_back(new_note);
         }
-        else{
+        else if(held_notes.size() == 0){
             new_note += (octave * 12);
-            //start new synth if 
+            //start new voice if 
             synths[synth_count].synth_activate(synth_count);
             int err = synths[synth_count].assign_newnote(new_note);
             printf("note base: %i, pitch: %f, on synth: %i\n", new_note, get_pitch(new_note), synth_count);
-        }   
+            held_notes.push_back(new_note);
+        }
+
         //keypress true
-        key_press(new_note, true);
-        held_notes.push_back(new_note);
+        key_press(new_note, synth_count, true);
+
     }
     else if (new_note == SynthUp)
     {
@@ -397,7 +398,12 @@ void manager::write_samples_to_buffer(int16_t* s_byteStream, long begin, long en
 }
 
 
-
+app_params manager::get_params() {
+    app_params ap;
+    ap.number_synths = this->max_num_synths;
+    ap.sample_rate = this->sample_rate;
+    return ap;
+}
 
 
 
@@ -412,7 +418,15 @@ void manager::set_up(app_params ap) {
     }
     for (int i = 0; i < max_num_synths; i++)
     {
+        for (int j = 0; j < ap.sps[i].polymax; j++) {
+            ap.sps[i].vps[j].flagged = true;
+            if (j >= 0) {
+                ap.sps[i].vps[j].mode = 2;
+            }
+        }
+
         synths[i].init_synth(ap.sps[i]);
+        //synths[i].flag();
     }
     setup_sdl();
     setup_sdl_audio();

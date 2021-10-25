@@ -54,7 +54,7 @@ public:
     double lfo_phase_pos;
     int lfo_phase_int;
     float mod_factor;
-    double amplitude_factor;
+    double amplitude_factor;    //a volume control
     /// <summary>
     /// ///////////////
     /// </summary>
@@ -83,6 +83,7 @@ public:
     double update_envelope();
     double get_envelope_amp_by_node(int base_node, double cursor);
     void key_press(int note, bool b, bool poly_over);
+    void flag();
 
     static bool is_init;
     static void init_data();
