@@ -420,9 +420,6 @@ void manager::set_up(app_params ap) {
     {
         for (int j = 0; j < ap.sps[i].polymax; j++) {
             ap.sps[i].vps[j].flagged = true;
-            if (j >= 0) {
-                ap.sps[i].vps[j].mode = 2;
-            }
         }
 
         synths[i].init_synth(ap.sps[i]);

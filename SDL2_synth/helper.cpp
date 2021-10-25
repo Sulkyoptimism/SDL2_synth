@@ -18,7 +18,7 @@ voice_params helper::voiced_params = {
     0,    //lfopos
     0,    //lfoint
     0.5,  //modfactor
-    1    //ammpfac
+    1    //ampfac
 
 };
 synth_params helper::synthd_params = {
@@ -92,7 +92,7 @@ app_params helper::params_from_json(json data) {
             ap.sps[i].vps[j].lfo_phase_pos = voice_list[j].at("lfopos");    //lfopos
             ap.sps[i].vps[j].lfo_phase_int = voice_list[j].at("lfoint");    //lfoint
             ap.sps[i].vps[j].mod_factor = voice_list[j].at("modfactor");  //modfactor
-            ap.sps[i].vps[j].amplitude_factor = voice_list[j].at("ammpfac");    //ammpfac
+            ap.sps[i].vps[j].amplitude_factor = voice_list[j].at("ampfac");    //ampfac
 
         }
     }
@@ -115,7 +115,7 @@ void helper::export_dparams()
     j_voi["lfopos"] = voiced_params.lfo_phase_pos;    //lfopos
     j_voi["lfoint"] = voiced_params.lfo_phase_int;    //lfoint
     j_voi["modfactor"] = voiced_params.mod_factor;  //modfactor
-    j_voi["ammpfac"] = voiced_params.amplitude_factor;    //ammpfac
+    j_voi["ampfac"] = voiced_params.amplitude_factor;    //ampfac
 
     json j_synth;
     j_synth["synth_id"] = synthd_params.id;
@@ -180,7 +180,7 @@ void helper::export_params(app_params ap)
             j_voi["lfopos"] = voiced_params.lfo_phase_pos;    //lfopos
             j_voi["lfoint"] = voiced_params.lfo_phase_int;    //lfoint
             j_voi["modfactor"] = voiced_params.mod_factor;  //modfactor
-            j_voi["ammpfac"] = voiced_params.amplitude_factor;    //ammpfac
+            j_voi["ampfac"] = voiced_params.amplitude_factor;    //ampfac
 
 
 
