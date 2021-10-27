@@ -411,6 +411,7 @@ app_params manager::get_params() {
 void manager::set_up(app_params ap) {
     this->sample_rate = ap.sample_rate;
     this->table_length = 1024;
+    default_params = ap;
     max_num_synths = ap.number_synths;
     for (int i = 0; i < 8; i++)
     {

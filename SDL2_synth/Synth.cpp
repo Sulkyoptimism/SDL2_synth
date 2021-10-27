@@ -30,6 +30,7 @@ void Synth::init_synth(synth_params sp) {
 	id = sp.id;
 	poly_mode = sp.poly_mode;
 	polymax = sp.polymax;
+	default_params = sp;
 	for (int i = 0; i < 8; i++) {
 		voices[i].init_voice(id, sp.vps[i]);
 	}
@@ -88,6 +89,14 @@ int Synth::assign_newnote(int new_note) {
 				voices[i].id = i;
 				voices[i].note = new_note;
 				voices[i].key_pressed = true;
+				if (voices[i].current_amp > 0 || voices[i].target_amp > 0 || voices[i].envelope_cursor > 0)
+				{
+					printf("Ah i dunno");
+				}
+				voices[i].current_amp = 0;
+				voices[i].target_amp = 0;
+				voices[i].envelope_cursor = 0;
+
 				return 0;
 			}
 		}
@@ -97,12 +106,23 @@ int Synth::assign_newnote(int new_note) {
 		int flag_count = 0;
 
 		for (int i = 0; i < 8; i++) {
-			if (voices[i].flagged) {
+			if (voices[i].flagged && voices[i].active == false && flag_count <= polymax) {
 				flag_count++;
 				voices[i].active = true;
 				voices[i].id = i;
 				voices[i].note = new_note;
 				voices[i].key_pressed = true;
+				voices[i].current_amp = 0;
+				voices[i].target_amp = 0;
+				voices[i].envelope_cursor = 0;
+
+
+				if (i + polymax < 8) {
+					voices[i + polymax].flagged = true;
+				}
+				if (flag_count == polymax) {
+					return 0;
+				}
 			}
 		}
 		return 0;

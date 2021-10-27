@@ -28,7 +28,7 @@ enum synth_control {SynthUp = -2, SynthDown = -3};
 {
 public:
     ////util func
-    static app_params default_params;
+    app_params default_params;
     static manager* get_instance();
     manager();
     ~manager();
