@@ -1,7 +1,5 @@
 #include "voice.h"
-//
-//
-//voice_params voice::default_params = {
+//voice_params helper::voiced_params = {
 //    false,//active
 //    false,
 //    -1,   //id //-1 non assign
@@ -11,11 +9,12 @@
 //    0.5,  //pulsewidth
 //    0,    //phasepos
 //    0,    //phaseint
-//    10,   //lforate
+//    0,   //lforate
+//    0,  //lfomode
 //    0,    //lfopos
 //    0,    //lfoint
-//    0.5  //modfactor
-//
+//    0.5,  //modfactor
+//    1    //ampfac
 //
 //};
 
@@ -36,6 +35,7 @@ voice::voice(double sample_rate, int t_length)
     //int samp = sine_wave_table[3];
 }
 
+//Init voice is used at the start to set the voice up, some other parameters are set up seperately eg flagged.
 void voice::init_voice( int parent_id, voice_params vp)
 {
     default_params = vp;
@@ -43,7 +43,6 @@ void voice::init_voice( int parent_id, voice_params vp)
     current_amp = 0;
     envelope_cursor = 0;
     active = vp.active;
-    flagged = vp.flagged;
     id = vp.id;
     note = vp.note;
     detune = vp.detune;
@@ -58,6 +57,19 @@ void voice::init_voice( int parent_id, voice_params vp)
     mod_factor = vp.mod_factor;    
     amplitude_factor = vp.amplitude_factor;
 
+}
+
+//hot load doesnt change any of the active parameters that must remain continuously changing in a smooth fasion eg phase ints
+void voice::hot_load_voice(voice_params vp) {
+    default_params = vp;
+    id = vp.id;
+    detune = vp.detune;
+    mode = vp.mode;
+    pulse_width = vp.pulse_width;
+    lfo_rate = vp.lfo_rate;
+    lfo_mode = vp.lfo_mode;
+    mod_factor = vp.mod_factor;
+    amplitude_factor = vp.amplitude_factor;
 }
 
 void voice::flag() {

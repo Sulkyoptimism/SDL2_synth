@@ -367,10 +367,7 @@ void callback::audio_callback(void* unused, Uint8* byte_stream, int byte_stream_
 }
 
 void manager::write_samples_to_buffer(int16_t* s_byteStream, long begin, long end, long length) {
-
-    //////////////////////////////////////////////////////////////////////
-    /*Sub all of this for basically summing the samples from the voices.*/
-    //////////////////////////////////////////////////////////////////////
+    //basically sums all of the sub classes into this class then adds to the output buffer
     if (samples == nullptr){
         samples = new int[length];
     }
@@ -407,7 +404,7 @@ app_params manager::get_params() {
 
 
 
-//set up
+//set up, part of the initalization step
 void manager::set_up(app_params ap) {
     this->sample_rate = ap.sample_rate;
     this->table_length = 1024;
@@ -430,6 +427,21 @@ void manager::set_up(app_params ap) {
     setup_sdl_audio();
 }
 
+//Hotloading parameters cant change any of the moving variables like phase ints or envelope cursors.
+//it also wont be able to change the sample rate or the table length while processing
+//as these are tied to the continuous output of audio
+void manager::hot_load(app_params ap)
+{
+    for (int i = 0; i < max_num_synths; i++)
+    {
+        synths[i].hot_load_synth(ap.sps[i]);
+
+        for (int j = 0; j < ap.sps[i].polymax; j++) {
+            ap.sps[i].vps[j].flagged = true;
+        }
+    }
+}
+//Standard SDL set up
 void manager::setup_sdl(void) {
 
     SDL_Init(SDL_INIT_VIDEO);
@@ -473,6 +485,7 @@ void manager::setup_sdl(void) {
         }
     }
 }
+//standard SDL audio set up
 int manager::setup_sdl_audio(void) {
 
     SDL_Init(SDL_INIT_AUDIO | SDL_INIT_TIMER);

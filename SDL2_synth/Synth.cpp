@@ -36,6 +36,16 @@ void Synth::init_synth(synth_params sp) {
 	}
 
 }
+void Synth::hot_load_synth(synth_params sp)
+{
+	id = sp.id;
+	poly_mode = sp.poly_mode;
+	polymax = sp.polymax;
+	default_params = sp;
+	for (int i = 0; i < 8; i++) {
+		voices[i].hot_load_voice(sp.vps[i]);
+	}
+}
 void Synth::flag() {
 	for (int i = 0; i < polymax; i++)
 	{

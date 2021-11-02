@@ -67,6 +67,8 @@ public:
     void set_up(app_params ap);
     int setup_sdl_audio(void);
     void setup_sdl(void);
+    void hot_load(app_params ap);
+
 
     //main loop
     void main_loop();

@@ -77,6 +77,7 @@ public:
 
     voice(double sample_rate, int table_length);
     void init_voice(int parent_id, voice_params vp);
+    void hot_load_voice(voice_params vp);
     int update_LFO_pos(double freq);
     void write_samples(long length);
     int16_t get_sample_from_table(int phase_int, int synthwave_mode, float pulse_width);

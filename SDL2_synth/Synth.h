@@ -41,6 +41,7 @@ public:
   
     Synth(double sample_rate, int table_length);
     void init_synth(synth_params sp);
+    void hot_load_synth(synth_params sp);
     void synth_activate(int id);
     int assign_newnote(int new_note);
     int* evaluate_samples(int block_size);
