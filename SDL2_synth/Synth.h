@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <limits.h>
 #include <math.h>
-#include <SDL2/SDL.h>
+#include "inc/SDL/SDL.h"
 #include <vector>
 #include "voice.h"
 

@@ -72,14 +72,16 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\thorf\source\repos\SDL2_synth\nlohmann;C:\Users\thorf\source\repos\SDL2_synth\SDL2\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\thorf\source\repos\SDL2_synth\SDL2\lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\inc</IncludePath>
+    <LibraryPath>C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\lib\x86s%28defunct%29;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <LibraryPath>C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\lib\x64s;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\inc</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -124,6 +126,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;rpc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -146,12 +149,14 @@
     <ClCompile Include="helper.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="manager.cpp" />
+    <ClCompile Include="reciever.cpp" />
     <ClCompile Include="Synth.cpp" />
     <ClCompile Include="voice.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="helper.h" />
     <ClInclude Include="manager.h" />
+    <ClInclude Include="reciever.h" />
     <ClInclude Include="Synth.h" />
     <ClInclude Include="voice.h" />
   </ItemGroup>

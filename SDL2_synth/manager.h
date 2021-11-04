@@ -1,12 +1,13 @@
 #pragma once
-#include "SDL2/SDL.h"
+#include "inc/SDL/SDL.h"
 #include <vector>
 #include <iostream>
 #include <fstream>
 #include <string>
 #include "Synth.h"
 #include <vector>
-#include "json.hpp"
+#include "inc/nlohmann/json.hpp"
+#include "reciever.h"
 
 //Global audio callback
 namespace callback {
@@ -16,7 +17,7 @@ namespace callback {
 //namespace holder for const data
 
 
-enum synth_control {SynthUp = -2, SynthDown = -3};
+enum synth_control {SynthUp = -2, SynthDown = -3, HotLoad = -4};
 
 //struct app_params {
 //    double sample_rate;
@@ -62,9 +63,12 @@ public:
     int synth_count;
     int octave;
 
+    //reciever input
+    reciever rec;
 
     //setup
     void set_up(app_params ap);
+    void setup_reciever();
     int setup_sdl_audio(void);
     void setup_sdl(void);
     void hot_load(app_params ap);
@@ -83,6 +87,7 @@ public:
 
     //input func
     void check_sdl_events(SDL_Event event);
+    void check_rpc();
     void handle_key_down(SDL_Keysym* keysym);
     void handle_key_up(SDL_Keysym* keysym);
     void handle_note_keys(SDL_Keysym* keysym);

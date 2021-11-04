@@ -48,6 +48,7 @@ void manager::main_loop() {
     // check for keyboard events etc.
     check_sdl_events(event);
 
+    
 
     // update screen.
     SDL_RenderClear(renderer);
@@ -69,6 +70,15 @@ void manager::check_sdl_events(SDL_Event event) {
             handle_key_up(&event.key.keysym);
             break;
         }
+    }
+}
+
+void manager::check_rpc()
+{
+    if (rec.get_hotload() == true) {
+        hot_load(helper::load_dparams("new_params.json"));
+        printf("RPC reload call recieved");
+        rec.reset();
     }
 }
 
@@ -181,6 +191,9 @@ static int get_key(SDL_Keysym* keysym)
     case SDLK_LEFT:
         new_note = SynthDown;
         break;
+    case SDLK_UP:
+        new_note = HotLoad;
+        break;
     default:
         break;
     }
@@ -273,6 +286,9 @@ void manager::handle_note_keys(SDL_Keysym* keysym) {
 
         printf("Synth changer, Synth changed to %i, code: %i\n", synth_count, SynthDown);
 
+    }
+    else if (new_note == HotLoad) {
+        hot_load(helper::load_dparams("new_params.json"));
     }
 }
 
@@ -423,8 +439,15 @@ void manager::set_up(app_params ap) {
         synths[i].init_synth(ap.sps[i]);
         //synths[i].flag();
     }
+    setup_reciever();
     setup_sdl();
     setup_sdl_audio();
+}
+
+void manager::setup_reciever()
+{
+    //std::thread reciever_thread(&reciever::run, rec);
+    //threads.push_back(reciever_thread);   
 }
 
 //Hotloading parameters cant change any of the moving variables like phase ints or envelope cursors.

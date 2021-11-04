@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "SDL2/SDL.h"
+#include "inc/SDL/SDL.h"
 #include <fstream>
-#include "json.hpp"
+#include "inc/nlohmann/json.hpp"
 #include <string>
 
 
