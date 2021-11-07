@@ -4,11 +4,12 @@
 class reciever
 {
 private:
-	rpc::server srv;
+	int port = 0;
+	bool quit = false;
 	bool trigger_hotload = false;
 public:
-	reciever();
-	~reciever();
+	reciever(int port);
+	void bind();
 	void run();
 	void reset();
 	void hotload();

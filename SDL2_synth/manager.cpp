@@ -44,16 +44,24 @@ manager* manager::get_instance() {
     return singleton_instance;
 }
 
-void manager::main_loop() {
+void manager::main_loop(reciever* rec) {
     // check for keyboard events etc.
     check_sdl_events(event);
 
-    
+    check_rpc(rec);
 
     // update screen.
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
     SDL_Delay(16);
+}
+
+void manager::run_synth()
+{
+  /*  while (!manager::get_instance()->quit)
+    {
+        manager::get_instance()->main_loop();
+    }*/
 }
 
 void manager::check_sdl_events(SDL_Event event) {
@@ -73,12 +81,12 @@ void manager::check_sdl_events(SDL_Event event) {
     }
 }
 
-void manager::check_rpc()
+void manager::check_rpc(reciever* rec)
 {
-    if (rec.get_hotload() == true) {
+    if (rec->get_hotload() == true) {
         hot_load(helper::load_dparams("new_params.json"));
         printf("RPC reload call recieved");
-        rec.reset();
+        rec->reset();
     }
 }
 

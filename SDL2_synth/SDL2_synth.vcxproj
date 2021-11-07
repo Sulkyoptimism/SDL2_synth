@@ -73,14 +73,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\inc</IncludePath>
-    <LibraryPath>C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\lib\x86s%28defunct%29;$(LibraryPath)</LibraryPath>
+    <LibraryPath>C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\lib\x86s%28defunct%29\SDLx86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <LibraryPath>C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\lib\x64s;$(LibraryPath)</LibraryPath>
+    <LibraryPath>C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\lib\x64s\rpc;C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\lib\x64s\SDL;$(LibraryPath)</LibraryPath>
     <IncludePath>C:\Users\thorf\source\repos\SDL2_synth\SDL2_synth\inc</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

@@ -64,7 +64,6 @@ public:
     int octave;
 
     //reciever input
-    reciever rec;
 
     //setup
     void set_up(app_params ap);
@@ -75,8 +74,10 @@ public:
 
 
     //main loop
-    void main_loop();
+    void main_loop(reciever* rec);
+    void run_synth();
 
+    //cleanup
     void clean_up();
     void cleanup_data(void);
     void destroy_sdl(void);
@@ -87,7 +88,7 @@ public:
 
     //input func
     void check_sdl_events(SDL_Event event);
-    void check_rpc();
+    void check_rpc(reciever* rec);
     void handle_key_down(SDL_Keysym* keysym);
     void handle_key_up(SDL_Keysym* keysym);
     void handle_note_keys(SDL_Keysym* keysym);
