@@ -30,7 +30,7 @@
     <ClCompile Include="helper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="reciever.cpp">
+    <ClCompile Include="receiver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -47,7 +47,7 @@
     <ClInclude Include="manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="reciever.h">
+    <ClInclude Include="receiver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

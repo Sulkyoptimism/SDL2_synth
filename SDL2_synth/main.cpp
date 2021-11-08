@@ -28,11 +28,11 @@ int main(int argc, char* args[]) {
 	//	});
 	//srv.run();
 
-	reciever rec = reciever(8080);
-	reciever* p_rec = &rec;
+	receiver rec = receiver(8080);
+	receiver* p_rec = &rec;
 	//rec.run();
-	std::thread reciever_thread(&reciever::run, p_rec);
-	printf("after threaded reciever\n");
+	std::thread receiver_thread(&receiver::run, p_rec);
+	printf("after threaded receiver\n");
 
 	//auto future = std::async(std::launch::async, &manager::run_synth, manager::get_instance());
 
@@ -40,7 +40,7 @@ int main(int argc, char* args[]) {
 		manager::get_instance()->manager::main_loop(p_rec);
 	}
 	manager::get_instance()->clean_up();
-	reciever_thread.join();
+	receiver_thread.join();
 
 	return 0;
 }

@@ -149,14 +149,14 @@
     <ClCompile Include="helper.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="manager.cpp" />
-    <ClCompile Include="reciever.cpp" />
+    <ClCompile Include="receiver.cpp" />
     <ClCompile Include="Synth.cpp" />
     <ClCompile Include="voice.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="helper.h" />
     <ClInclude Include="manager.h" />
-    <ClInclude Include="reciever.h" />
+    <ClInclude Include="receiver.h" />
     <ClInclude Include="Synth.h" />
     <ClInclude Include="voice.h" />
   </ItemGroup>

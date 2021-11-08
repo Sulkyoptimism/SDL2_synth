@@ -44,7 +44,7 @@ manager* manager::get_instance() {
     return singleton_instance;
 }
 
-void manager::main_loop(reciever* rec) {
+void manager::main_loop(receiver* rec) {
     // check for keyboard events etc.
     check_sdl_events(event);
 
@@ -81,12 +81,21 @@ void manager::check_sdl_events(SDL_Event event) {
     }
 }
 
-void manager::check_rpc(reciever* rec)
+void manager::check_rpc(receiver* rec)
 {
     if (rec->get_hotload() == true) {
         hot_load(helper::load_dparams("new_params.json"));
-        printf("RPC reload call recieved");
-        rec->reset();
+        printf("RPC reload call recieved\n");
+        rec->reset_hotload();
+    }
+    if (rec->get_note_ready()) {
+        std::vector<std::pair<int, int>> temp_list = rec->get_next_note();
+        for (int i = 0; i < temp_list.size(); i++)
+        {
+            handle_note(temp_list.at(i).first, temp_list.at(i).second, false, NULL);
+        }
+        printf("RPC note call recieved");
+        rec->reset_note();
     }
 }
 
@@ -210,7 +219,7 @@ static int get_key(SDL_Keysym* keysym)
 
 void manager::handle_key_down(SDL_Keysym* keysym) {
 
-    handle_note_keys(keysym);
+    handle_note(synth_count, 0, true, keysym);
 }
 
 void manager::key_press(int note, int synthid, bool b) {
@@ -237,10 +246,21 @@ void manager::handle_key_up(SDL_Keysym* keysym) {
     }
 }
 
-void manager::handle_note_keys(SDL_Keysym* keysym) {
+//external access point for note input 
+void manager::handle_note(int synth_id, int note, bool keys, SDL_Keysym* keysym)
+{
+    if (keys) {
+        int temp_note = get_key(keysym);
+        handle_note_keys(temp_note, keys, synth_id);
+    }
+    else { 
+        handle_note_keys(note, keys, synth_id);
+    }
+}
+
+void manager::handle_note_keys(int new_note, bool keys, int synth_id) {
     // change note or octave depending on which key is pressed.
-    int temp_note = get_key(keysym);
-    int new_note = temp_note;
+    int temp_note = new_note;
     temp_note += (octave * 12);
     bool is_new = false;
     std::vector<int>::iterator it;
@@ -252,25 +272,37 @@ void manager::handle_note_keys(SDL_Keysym* keysym) {
 
     //if new note is valid and is new
     if (is_new && new_note > -1) {
-        if (synths[synth_count].active && synths[synth_count].poly_mode) {
+        if (synths[synth_id].active && synths[synth_id].poly_mode) {
             new_note += (octave * 12);
-            int err = synths[synth_count].assign_newnote(new_note);
-            printf("note base: %i, pitch: %f, on synth: %i\n", new_note, get_pitch(new_note), synth_count);
-            held_notes.push_back(new_note);
+            int err = synths[synth_id].assign_newnote(new_note);
+            printf("note base: %i, pitch: %f, on synth: %i", new_note, get_pitch(new_note), synth_id);
+            if (keys) {
+                printf(" -- Played from keyboard\n");
+                held_notes.push_back(new_note);
+            }
+            else {
+                printf("\n");
+            }
         }
         else if(held_notes.size() == 0){
             new_note += (octave * 12);
             //start new voice if 
-            synths[synth_count].synth_activate(synth_count);
-            int err = synths[synth_count].assign_newnote(new_note);
-            printf("note base: %i, pitch: %f, on synth: %i\n", new_note, get_pitch(new_note), synth_count);
-            held_notes.push_back(new_note);
+            synths[synth_id].synth_activate(synth_id);
+            int err = synths[synth_id].assign_newnote(new_note);
+            printf("note base: %i, pitch: %f, on synth: %i", new_note, get_pitch(new_note), synth_id);
+            if (keys) {
+                printf(" -- Played from keyboard\n");
+                held_notes.push_back(new_note);
+            }
+            else {
+                printf("\n");
+            }
         }
 
         //keypress true
-        key_press(new_note, synth_count, true);
+        key_press(new_note, synth_id, true);
 
-    }
+    }//below are test methods of input
     else if (new_note == SynthUp)
     {
         if (synth_count > 3) {
@@ -445,18 +477,12 @@ void manager::set_up(app_params ap) {
         }
 
         synths[i].init_synth(ap.sps[i]);
-        //synths[i].flag();
     }
-    setup_reciever();
     setup_sdl();
     setup_sdl_audio();
 }
 
-void manager::setup_reciever()
-{
-    //std::thread reciever_thread(&reciever::run, rec);
-    //threads.push_back(reciever_thread);   
-}
+
 
 //Hotloading parameters cant change any of the moving variables like phase ints or envelope cursors.
 //it also wont be able to change the sample rate or the table length while processing

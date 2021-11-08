@@ -7,7 +7,7 @@
 #include "Synth.h"
 #include <vector>
 #include "inc/nlohmann/json.hpp"
-#include "reciever.h"
+#include "receiver.h"
 
 //Global audio callback
 namespace callback {
@@ -63,18 +63,17 @@ public:
     int synth_count;
     int octave;
 
-    //reciever input
+    //receiver input
 
     //setup
     void set_up(app_params ap);
-    void setup_reciever();
     int setup_sdl_audio(void);
     void setup_sdl(void);
     void hot_load(app_params ap);
 
 
     //main loop
-    void main_loop(reciever* rec);
+    void main_loop(receiver* rec);
     void run_synth();
 
     //cleanup
@@ -88,10 +87,11 @@ public:
 
     //input func
     void check_sdl_events(SDL_Event event);
-    void check_rpc(reciever* rec);
+    void check_rpc(receiver* rec);
     void handle_key_down(SDL_Keysym* keysym);
     void handle_key_up(SDL_Keysym* keysym);
-    void handle_note_keys(SDL_Keysym* keysym);
+    void handle_note(int synth_id, int note, bool keys, SDL_Keysym* keysym);  //external note input
+    void handle_note_keys(int new_note, bool keys, int synth_id);
     void print_note(int note);
     void key_press(int note, int synthid, bool b);
 
