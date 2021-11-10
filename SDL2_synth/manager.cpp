@@ -75,7 +75,7 @@ void manager::check_sdl_events(SDL_Event event) {
             handle_key_down(&event.key.keysym);
             break;
         case SDL_KEYUP:
-            handle_key_up(&event.key.keysym);
+            handle_key_up(&event.key.keysym, -1);
             break;
         }
     }
@@ -89,10 +89,14 @@ void manager::check_rpc(receiver* rec)
         rec->reset_hotload();
     }
     if (rec->get_note_ready()) {
-        std::vector<std::pair<int, int>> temp_list = rec->get_next_note();
+        std::queue<std::pair<int, int>> temp_list = rec->get_next_note();
         for (int i = 0; i < temp_list.size(); i++)
         {
-            handle_note(temp_list.at(i).first, temp_list.at(i).second, false, NULL);
+            std::pair<int, int> temp_note = temp_list.front();
+            if (temp_note.first != -1) {
+                handle_note(temp_note.first, temp_note.second, false, NULL);
+                handle_key_up(NULL, temp_note.second);
+            }
         }
         printf("RPC note call recieved");
         rec->reset_note();
@@ -226,16 +230,25 @@ void manager::key_press(int note, int synthid, bool b) {
      synths[synthid].key_press(note, b);
 }
 
-void manager::handle_key_up(SDL_Keysym* keysym) {
+void manager::handle_key_up(SDL_Keysym* keysym, int note_check) {
 
+    if (keysym == nullptr) {
+        held_notes.erase(std::remove(held_notes.begin(), held_notes.end(), note_check), held_notes.end());
+        //keypress false
+        key_press(note_check, synth_count, false);
+        last_note = -1;
+        return;
+    }
     switch (keysym->sym) {
     case SDLK_PLUS:
         break;
     case SDLK_MINUS:
         break;
     default:
-        int note = get_key(keysym);
+        int note = 0;
+        note = get_key(keysym);
         note += (octave * 12);
+       
 
         held_notes.erase(std::remove(held_notes.begin(), held_notes.end(), note), held_notes.end());
         //keypress false
@@ -254,6 +267,7 @@ void manager::handle_note(int synth_id, int note, bool keys, SDL_Keysym* keysym)
         handle_note_keys(temp_note, keys, synth_id);
     }
     else { 
+        note -= (octave * 12);
         handle_note_keys(note, keys, synth_id);
     }
 }
@@ -276,9 +290,9 @@ void manager::handle_note_keys(int new_note, bool keys, int synth_id) {
             new_note += (octave * 12);
             int err = synths[synth_id].assign_newnote(new_note);
             printf("note base: %i, pitch: %f, on synth: %i", new_note, get_pitch(new_note), synth_id);
+            held_notes.push_back(new_note);
             if (keys) {
                 printf(" -- Played from keyboard\n");
-                held_notes.push_back(new_note);
             }
             else {
                 printf("\n");
@@ -290,9 +304,9 @@ void manager::handle_note_keys(int new_note, bool keys, int synth_id) {
             synths[synth_id].synth_activate(synth_id);
             int err = synths[synth_id].assign_newnote(new_note);
             printf("note base: %i, pitch: %f, on synth: %i", new_note, get_pitch(new_note), synth_id);
+            held_notes.push_back(new_note);
             if (keys) {
                 printf(" -- Played from keyboard\n");
-                held_notes.push_back(new_note);
             }
             else {
                 printf("\n");

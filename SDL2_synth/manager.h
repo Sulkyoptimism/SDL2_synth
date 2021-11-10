@@ -89,7 +89,7 @@ public:
     void check_sdl_events(SDL_Event event);
     void check_rpc(receiver* rec);
     void handle_key_down(SDL_Keysym* keysym);
-    void handle_key_up(SDL_Keysym* keysym);
+    void handle_key_up(SDL_Keysym* keysym, int note);
     void handle_note(int synth_id, int note, bool keys, SDL_Keysym* keysym);  //external note input
     void handle_note_keys(int new_note, bool keys, int synth_id);
     void print_note(int note);
