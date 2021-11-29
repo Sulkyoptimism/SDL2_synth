@@ -17,24 +17,12 @@ int main(int argc, char* args[]) {
 	//////////////////////////////////////////////////////////
 	manager::get_instance()->set_up(ap);
 	printf("setup complete\n");
-	//manager::get_instance()->manager::run_synth();
-	//manager::get_instance()->clean_up();
 
-
-	//////////////////////////////////////////////////////////
-	//rpc::server srv(8080);
-	//srv.bind("reload", []() {
-	//	manager::get_instance()->hot_load(helper::load_dparams("new_params.json"));
-	//	});
-	//srv.run();
 
 	receiver rec = receiver(8080);
 	receiver* p_rec = &rec;
-	//rec.run();
 	std::thread receiver_thread(&receiver::run, p_rec);
 	printf("after threaded receiver\n");
-
-	//auto future = std::async(std::launch::async, &manager::run_synth, manager::get_instance());
 
 	while (!manager::get_instance()->quit) {
 		manager::get_instance()->manager::main_loop(p_rec);
@@ -43,12 +31,4 @@ int main(int argc, char* args[]) {
 	receiver_thread.join();
 
 	return 0;
-}
-
-void reload_call() {
-}
-
-
-void start() {
-
 }

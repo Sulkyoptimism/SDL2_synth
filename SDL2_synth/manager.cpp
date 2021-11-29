@@ -2,6 +2,7 @@
 
 manager* manager::singleton_instance = new manager();
 
+//default params for file
 //app_params manager::default_params = {
 //    44100,
 //    4,
@@ -18,7 +19,8 @@ manager* manager::singleton_instance = new manager();
 
 manager::manager()
 {
-    myfile.open("outlog.txt");
+    //Error or output file for logging
+    //myfile.open("outlog.txt");
     quit = false;
     debuglog = false;
     window = NULL;
@@ -27,9 +29,6 @@ manager::manager()
     synth_count = 0;
     table_length = 1024;
     samples = nullptr;
-
-
-
 }
 
 manager::~manager()
@@ -37,6 +36,7 @@ manager::~manager()
     myfile.close();
 }
 
+//singleton get instance 
 manager* manager::get_instance() {
     if (singleton_instance ==nullptr) {
         singleton_instance = new manager();
@@ -44,10 +44,12 @@ manager* manager::get_instance() {
     return singleton_instance;
 }
 
+//the main loop of the synth
 void manager::main_loop(receiver* rec) {
     // check for keyboard events etc.
     check_sdl_events(event);
 
+    //check the receiver for a queue of messages
     check_rpc(rec);
 
     // update screen.
@@ -56,14 +58,7 @@ void manager::main_loop(receiver* rec) {
     SDL_Delay(16);
 }
 
-void manager::run_synth()
-{
-  /*  while (!manager::get_instance()->quit)
-    {
-        manager::get_instance()->main_loop();
-    }*/
-}
-
+//SDL specific check keyboard events log
 void manager::check_sdl_events(SDL_Event event) {
 
     while (SDL_PollEvent(&event)) {
@@ -81,29 +76,36 @@ void manager::check_sdl_events(SDL_Event event) {
     }
 }
 
+//checks the receiver for messages
 void manager::check_rpc(receiver* rec)
 {
+    //if hot reload is ready then activate the reload on new params
     if (rec->get_hotload() == true) {
         hot_load(helper::load_dparams("new_params.json"));
         printf("RPC reload call recieved\n");
         rec->reset_hotload();
     }
+
+    //if the next set of notes is ready then start popping them from the queue
     if (rec->get_note_ready()) {
         std::queue<std::pair<int, int>> temp_list = rec->get_next_note();
         for (int i = 0; i < temp_list.size(); i++)
         {
             std::pair<int, int> temp_note = temp_list.front();
             if (temp_note.first != -1) {
+                //push note down using input system
                 handle_note(temp_note.first, temp_note.second, false, NULL);
+                //push note up using input system
                 handle_key_up(NULL, temp_note.second);
             }
         }
         printf("RPC note call recieved");
+        //reset receiver now that notes are removed.
         rec->reset_note();
     }
 }
 
-
+//convert key event from SDL to midi note
 static int get_key(SDL_Keysym* keysym)
 {
     int new_note = -1; //note
@@ -287,6 +289,7 @@ void manager::handle_note_keys(int new_note, bool keys, int synth_id) {
     //if new note is valid and is new
     if (is_new && new_note > -1) {
         if (synths[synth_id].active && synths[synth_id].poly_mode) {
+            //when synth is already active
             new_note += (octave * 12);
             int err = synths[synth_id].assign_newnote(new_note);
             printf("note base: %i, pitch: %f, on synth: %i", new_note, get_pitch(new_note), synth_id);
@@ -299,6 +302,7 @@ void manager::handle_note_keys(int new_note, bool keys, int synth_id) {
             }
         }
         else if(held_notes.size() == 0){
+            //when a new synth must be allocated
             new_note += (octave * 12);
             //start new voice if 
             synths[synth_id].synth_activate(synth_id);
@@ -402,6 +406,7 @@ double manager::get_pitch(double note) {
     return p;
 }
 
+//specific callback for audio basically unchanged
 void callback::audio_callback(void* unused, Uint8* byte_stream, int byte_stream_length) {
 
     /*
@@ -436,6 +441,7 @@ void callback::audio_callback(void* unused, Uint8* byte_stream, int byte_stream_
     }
 }
 
+//summing function, where all the synths are evaluated and then summed into one another before being sent to output
 void manager::write_samples_to_buffer(int16_t* s_byteStream, long begin, long end, long length) {
     //basically sums all of the sub classes into this class then adds to the output buffer
     if (samples == nullptr){
@@ -464,7 +470,7 @@ void manager::write_samples_to_buffer(int16_t* s_byteStream, long begin, long en
     }
 }
 
-
+//defunct?
 app_params manager::get_params() {
     app_params ap;
     ap.number_synths = this->max_num_synths;
