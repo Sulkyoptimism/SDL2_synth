@@ -61,16 +61,19 @@ void manager::main_loop(receiver* rec) {
 //SDL specific check keyboard events log
 void manager::check_sdl_events(SDL_Event event) {
 
+    std::map<std::string, Synth>::iterator it;
+
+    it = synths.begin();
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
         case SDL_QUIT:
             quit = true;
             break;
         case SDL_KEYDOWN:
-            handle_key_down(&event.key.keysym);
+            handle_key_down(&event.key.keysym,it->first);
             break;
         case SDL_KEYUP:
-            handle_key_up(&event.key.keysym, -1);
+            handle_key_up(&event.key.keysym, -1, it->first);
             break;
         }
     }
@@ -81,23 +84,23 @@ void manager::check_rpc(receiver* rec)
 {
     //if hot reload is ready then activate the reload on new params
     if (rec->get_hotload() == true) {
-        hot_load(helper::load_dparams("new_params.json"));
+        hot_load(helper::load_dparams("synthout.json"));
         printf("RPC reload call recieved\n");
         rec->reset_hotload();
     }
 
     //if the next set of notes is ready then start popping them from the queue
     if (rec->get_note_ready()) {
-        std::queue<std::pair<int, int>> temp_list = rec->get_next_note();
+        std::queue<std::pair<std::string, int>> temp_list = rec->get_next_note();
         for (int i = 0; i < temp_list.size(); i++)
         {
-            std::pair<int, int> temp_note = temp_list.front();
-            if (temp_note.first != -1) {
-                //push note down using input system
-                handle_note(temp_note.first, temp_note.second, false, NULL);
-                //push note up using input system
-                handle_key_up(NULL, temp_note.second);
-            }
+            std::pair<std::string, int> temp_note = temp_list.front();
+            
+            //push note down using input system
+            handle_note(temp_note.first, temp_note.second, false, NULL);
+            //push note up using input system
+            handle_key_up(NULL, temp_note.second, temp_note.first);
+            
         }
         printf("RPC note call recieved");
         //reset receiver now that notes are removed.
@@ -223,21 +226,21 @@ static int get_key(SDL_Keysym* keysym)
     return new_note;
 }
 
-void manager::handle_key_down(SDL_Keysym* keysym) {
+void manager::handle_key_down(SDL_Keysym* keysym, std::string synth_id) {
 
-    handle_note(synth_count, 0, true, keysym);
+    handle_note(synth_id, 0, true, keysym);
 }
 
-void manager::key_press(int note, int synthid, bool b) {
+void manager::key_press(int note, std::string synthid, bool b) {
      synths[synthid].key_press(note, b);
 }
 
-void manager::handle_key_up(SDL_Keysym* keysym, int note_check) {
+void manager::handle_key_up(SDL_Keysym* keysym, int note_check, std::string synth_id) {
 
     if (keysym == nullptr) {
         held_notes.erase(std::remove(held_notes.begin(), held_notes.end(), note_check), held_notes.end());
         //keypress false
-        key_press(note_check, synth_count, false);
+        key_press(note_check, synth_id, false);
         last_note = -1;
         return;
     }
@@ -254,7 +257,7 @@ void manager::handle_key_up(SDL_Keysym* keysym, int note_check) {
 
         held_notes.erase(std::remove(held_notes.begin(), held_notes.end(), note), held_notes.end());
         //keypress false
-        key_press(note, synth_count, false);
+        key_press(note, synth_id, false);
         last_note = -1;
         
         break;
@@ -262,7 +265,7 @@ void manager::handle_key_up(SDL_Keysym* keysym, int note_check) {
 }
 
 //external access point for note input 
-void manager::handle_note(int synth_id, int note, bool keys, SDL_Keysym* keysym)
+void manager::handle_note(std::string synth_id, int note, bool keys, SDL_Keysym* keysym)
 {
     if (keys) {
         int temp_note = get_key(keysym);
@@ -274,7 +277,7 @@ void manager::handle_note(int synth_id, int note, bool keys, SDL_Keysym* keysym)
     }
 }
 
-void manager::handle_note_keys(int new_note, bool keys, int synth_id) {
+void manager::handle_note_keys(int new_note, bool keys, std::string synth_id) {
     // change note or octave depending on which key is pressed.
     int temp_note = new_note;
     temp_note += (octave * 12);
@@ -292,7 +295,7 @@ void manager::handle_note_keys(int new_note, bool keys, int synth_id) {
             //when synth is already active
             new_note += (octave * 12);
             int err = synths[synth_id].assign_newnote(new_note);
-            printf("note base: %i, pitch: %f, on synth: %i", new_note, get_pitch(new_note), synth_id);
+            printf("note base: %i, pitch: %f, on synth: %s", new_note, get_pitch(new_note), synth_id);
             held_notes.push_back(new_note);
             if (keys) {
                 printf(" -- Played from keyboard\n");
@@ -448,18 +451,36 @@ void manager::write_samples_to_buffer(int16_t* s_byteStream, long begin, long en
         samples = new int[length];
     }
     memset(samples, 0, length * sizeof(int));
-    for (int i = 0; i < max_num_synths; i ++) {
+ /*   for (int i = 0; i < max_num_synths; i ++) {
         if (synths[i].active) {
             synths[i].evaluate_samples(length);
         }
+    }*/
+
+    std::map<std::string, Synth>::iterator it;
+
+    for (it = synths.begin(); it != synths.end(); it++)
+    {
+        if (it->second.active) {
+            it->second.evaluate_samples(length);
+         }
     }
 
     for (int i = 0; i < length; i++){
-        for (int s = 0; s < max_num_synths; s++){
-            if (synths[s].active) {
-                samples[i] += synths[s].sample[i];
+        //for (int s = 0; s < max_num_synths; s++){
+        //    if (synths[s].active) {
+        //        samples[i] += synths[s].sample[i];
+        //    }
+        //}
+        std::map<std::string, Synth>::iterator it2;
+
+        for (it2 = synths.begin(); it2 != synths.end(); it2++)
+        {
+            if (it2->second.active) {
+                samples[i] += it2->second.sample[i];
             }
         }
+
         if (s_byteStream != NULL) {
             samples[i] *= 0.1; // scale master post sum volume.
             //myfile << std::to_string(samples[i]);
@@ -488,7 +509,9 @@ void manager::set_up(app_params ap) {
     max_num_synths = ap.number_synths;
     for (int i = 0; i < 8; i++)
     {
-        synths.push_back(Synth::Synth(sample_rate, table_length));
+        if (ap.sps[i].id != "") {
+            synths[ap.sps[i].id] = (Synth::Synth(sample_rate, table_length));
+        }
     }
     for (int i = 0; i < max_num_synths; i++)
     {
@@ -496,7 +519,7 @@ void manager::set_up(app_params ap) {
             ap.sps[i].vps[j].flagged = true;
         }
 
-        synths[i].init_synth(ap.sps[i]);
+        synths[ap.sps[i].id].init_synth(ap.sps[i]);
     }
     setup_sdl();
     setup_sdl_audio();
@@ -511,7 +534,7 @@ void manager::hot_load(app_params ap)
 {
     for (int i = 0; i < max_num_synths; i++)
     {
-        synths[i].hot_load_synth(ap.sps[i]);
+        synths[ap.sps[i].id].hot_load_synth(ap.sps[i]);
 
         for (int j = 0; j < ap.sps[i].polymax; j++) {
             ap.sps[i].vps[j].flagged = true;

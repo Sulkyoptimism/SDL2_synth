@@ -41,7 +41,7 @@ public:
     //voice
     bool active;
     bool flagged;
-    int parent_id;
+    std::string parent_id;
     int id;
     int note;
     float detune;
@@ -76,7 +76,7 @@ public:
     double smoothing_enabled = true;
 
     voice(double sample_rate, int table_length);
-    void init_voice(int parent_id, voice_params vp);
+    void init_voice(std::string parent_id, voice_params vp);
     void hot_load_voice(voice_params vp);
     int update_LFO_pos(double freq);
     void write_samples(long length);

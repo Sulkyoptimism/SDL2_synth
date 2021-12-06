@@ -21,7 +21,7 @@ void receiver::run()
 		printf("Hot load bool called\n");
 		}
 	);	
-	srv.bind("addnotes", [this](int notes_count, std::pair<int,int> notes_info) {
+	srv.bind("addnotes", [this](int notes_count, std::pair<std::string,int> notes_info) {
 		notes_in_count = notes_count;
 		note_ready = true;
 		syn_notes.push(notes_info);
@@ -44,7 +44,7 @@ void receiver::reset_note()
 {
 	if (notes_in_count - 1 < 1) {
 		note_ready = false;
-		std::queue<std::pair<int,int>> empty;
+		std::queue<std::pair<std::string,int>> empty;
 		syn_notes.swap(empty);
 	}
 	notes_in_count--;
@@ -60,7 +60,7 @@ bool receiver::get_note_ready()
 	return note_ready;
 }
 
-std::queue<std::pair<int,int>> receiver::get_next_note()
+std::queue<std::pair<std::string,int>> receiver::get_next_note()
 {
 	return syn_notes;
 }

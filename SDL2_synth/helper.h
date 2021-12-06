@@ -27,7 +27,7 @@ struct voice_params {
 };
 
 struct synth_params {
-    int id;
+    std::string id;
     bool poly_mode;
     int polymax;
     voice_params vps[8];

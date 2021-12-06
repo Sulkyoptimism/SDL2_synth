@@ -22,7 +22,7 @@ public:
 
     // general
     bool active;
-    int id;
+    std::string id;
     bool poly_mode = true;
     int polymax = 1;
 
@@ -38,11 +38,11 @@ public:
     int min_note = 12;
     int* sample;
 
-  
+    Synth();
     Synth(double sample_rate, int table_length);
     void init_synth(synth_params sp);
     void hot_load_synth(synth_params sp);
-    void synth_activate(int id);
+    void synth_activate(std::string id);
     int assign_newnote(int new_note);
     int* evaluate_samples(int block_size);
     void key_press(int note, bool b);

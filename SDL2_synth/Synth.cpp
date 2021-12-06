@@ -13,12 +13,25 @@
 //	voice::default_params}
 //
 //};
+Synth::Synth() {
+	active = false;
+	sample = nullptr;
+	id = "Synth";
+
+	this->sample_rate = 44100;
+	this->table_length = 1024;
+	synth_params test_params = default_params;
+	for (int i = 0; i < 8; i++) {
+		voices.push_back(voice(sample_rate, table_length));
+	}
+}
 
 Synth::Synth(double sample_rate, int table_length){
 	active = false;
 	sample = nullptr;
+	id = "Synth";
 	this->sample_rate = sample_rate;
-	this->table_length = table_length;
+	this->table_length = table_length; //error here
 	synth_params test_params = default_params;
 	for (int i = 0; i < 8; i++) {
 		voices.push_back(voice(sample_rate, table_length));
@@ -70,7 +83,7 @@ void Synth::key_press(int note, bool b) {
 	}
 }
 
-void Synth::synth_activate(int id){
+void Synth::synth_activate(std::string id){
 	active = true;
 	this->id = id;
 }

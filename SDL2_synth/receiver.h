@@ -9,7 +9,7 @@ private:
 	bool quit = false;
 	bool trigger_hotload = false;
 	bool note_ready = false;
-	std::queue<std::pair<int, int>> syn_notes;
+	std::queue<std::pair<std::string, int>> syn_notes;
 	int notes_in_count = 0;
 public:
 	receiver(int port);
@@ -21,7 +21,7 @@ public:
 	bool get_note_ready();
 	void pop_next();
 
-	std::queue<std::pair<int, int>> get_next_note();
+	std::queue<std::pair<std::string, int>> get_next_note();
 
 
 };

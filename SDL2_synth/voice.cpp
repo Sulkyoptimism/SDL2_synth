@@ -36,7 +36,7 @@ voice::voice(double sample_rate, int t_length)
 }
 
 //Init voice is used at the start to set the voice up, some other parameters are set up seperately eg flagged.
-void voice::init_voice( int parent_id, voice_params vp)
+void voice::init_voice( std::string parent_id, voice_params vp)
 {
     default_params = vp;
     this->parent_id = parent_id;

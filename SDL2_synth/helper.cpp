@@ -22,7 +22,7 @@ voice_params helper::voiced_params = {
 
 };
 synth_params helper::synthd_params = {
-    -1,
+    "Synth",
     true,
     1,
     {
@@ -69,7 +69,8 @@ app_params helper::params_from_json(json data) {
 
     for (int i = 0; i < ap.number_synths; i++)
     {
-        ap.sps[i].id = synth_list[i].at("synth_id");
+        std::string name = synth_list[i].at("synth_id");
+        ap.sps[i].id = name;
         ap.sps[i].poly_mode = synth_list[i].at("poly_mode");
         ap.sps[i].polymax = synth_list[i].at("poly_max");
         std::vector<json> voice_list = synth_list[i].at("vps");
